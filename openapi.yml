@@ -29,7 +29,7 @@ paths:
                                     items:
                                         type: "string"
                                 amount:
-                                    type: "string"
+                                    type: "integer"
                 required:
                     - "participants"
                     - "payments"
@@ -43,11 +43,11 @@ paths:
                       paid_for:
                         - "Alice"
                         - "Bob"
-                      amount: "50.00"
+                      amount: 50
                     - paid_by: "Alice"
                       paid_for:
                         - "Bob"
-                      amount: "30.00"
+                      amount: 30
       responses:
         '200':
           description: "Calculation Result"
@@ -83,7 +83,18 @@ paths:
                     schema:
                         type: object
                         properties:
-                          error:
+                          detail:
                             type: string
                     example:
-                        error: "Invalid input data"
+                        detail: "Invalid input data"
+        '500':
+            description: "Internal ServerError"
+            content:
+                application/json:
+                    schema:
+                        type: object
+                        properties:
+                            detail:
+                                type: string
+                    example:
+                        detail: "Internal Server Error"
