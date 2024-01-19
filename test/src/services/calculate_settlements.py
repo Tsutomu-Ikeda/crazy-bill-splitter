@@ -17,7 +17,7 @@ class CalculateSettlementResponseBody(BaseModel):
 def calculate_settlements(request_body: CalculateSettlementRequestBody) -> CalculateSettlementResponseBody:
     resp = requests.post(
         url=f"{env.settings.TARGET_HOST}/calculate-settlements",
-        json=request_body.model_dump_json(),
+        json=request_body.model_dump(),
     )
 
     resp.raise_for_status()
