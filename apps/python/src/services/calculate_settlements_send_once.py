@@ -29,10 +29,9 @@ def calculate_settlements_send_once(*, payments: list[schemas.Payment], particip
             (
                 person
                 for person in receivable_amounts
-                if receivable_amounts[person] > exchange_amount
+                if receivable_amounts[person] >= exchange_amount
             ),
             key=lambda person: receivable_amounts[person],
-            reverse=True,
         )
 
         if len(perfect_receive_candidates) >= 1:
