@@ -18,6 +18,31 @@ def calculate_settlements(*, payments: list[schemas.Payment], participants: list
 
     settlements = []
 
+    for person in receivable_amounts:
+        if receivable_amounts[person] >= 0:
+            continue
+
+        perfect_receive_candidates = sorted(
+            (
+                receive_person
+                for receive_person in receivable_amounts
+                if receivable_amounts[receive_person] == -receivable_amounts[person]
+            ),
+            key=lambda p: receivable_amounts[p],
+        )
+
+        if len(perfect_receive_candidates) >= 1:
+            exchange_amount = -receivable_amounts[person]
+            receivable_amounts[person] += exchange_amount
+            receivable_amounts[perfect_receive_candidates[0]] -= exchange_amount
+            settlements.append(
+                schemas.Settlement(
+                    send_by=person,
+                    send_for=perfect_receive_candidates[0],
+                    amount=Decimal(f"{float(exchange_amount):.2f}"),
+                )
+            )
+
     while True:
         person_with_max_receivable_amount = max(receivable_amounts, key=lambda person: receivable_amounts[person])
         person_with_min_receivable_amount = min(receivable_amounts, key=lambda person: receivable_amounts[person])
