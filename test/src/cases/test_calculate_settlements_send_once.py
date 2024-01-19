@@ -280,8 +280,6 @@ def test_normal(comment: str, request_body: services.CalculateSettlementRequestB
 
     assert len(actual_settlements.settlements) <= expected_settlements_constraints.settlements_length, comment
 
-    breakpoint()
-
     for person, expected_receive_amount in expected_settlements_constraints.receive_amount.items():
         sum_send_amount = sum(
             [
