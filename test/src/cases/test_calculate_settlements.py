@@ -236,6 +236,36 @@ class SettlementsConstraints(BaseModel):
                     },
                     total_exchange_amount=Decimal(6000)
                 )
+            ),
+            (
+                "3人で割り勘をして、割り切れないケース",
+                services.CalculateSettlementRequestBody(
+                    participants=[
+                        schemas.Person(name="A"),
+                        schemas.Person(name="B"),
+                        schemas.Person(name="C"),
+                    ],
+                    payments=[
+                        schemas.Payment(
+                            paid_by=schemas.Person(name="A"),
+                            paid_for=[
+                                schemas.Person(name="A"),
+                                schemas.Person(name="B"),
+                                schemas.Person(name="C"),
+                            ],
+                            amount=1000
+                        ),
+                    ],
+                ),
+                SettlementsConstraints(
+                    settlements_length=2,
+                    receive_amount={
+                        schemas.Person(name="A"): Decimal("666.66"),
+                        schemas.Person(name="B"): Decimal("-333.33"),
+                        schemas.Person(name="C"): Decimal("-333.33"),
+                    },
+                    total_exchange_amount=Decimal("666.66")
+                )
             )
         ]
 )
