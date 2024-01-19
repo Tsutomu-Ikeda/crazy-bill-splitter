@@ -1,5 +1,7 @@
-from pydantic import BaseModel, Field
 from decimal import Decimal
+import enum
+
+from pydantic import BaseModel, Field
 
 from .person import Person
 
@@ -20,3 +22,7 @@ class Settlement(BaseModel):
 
     def __repr__(self) -> str:
         return self.__str__()
+
+
+class Constraint(enum.StrEnum):
+    send_once = "send-once"

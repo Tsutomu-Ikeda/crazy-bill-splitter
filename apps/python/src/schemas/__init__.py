@@ -1,2 +1,2 @@
-from .payment import Payment, Settlement
+from .payment import Payment, Settlement, Constraint
 from .person import Person

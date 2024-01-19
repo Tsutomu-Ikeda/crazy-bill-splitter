@@ -8,6 +8,7 @@ import schemas
 class CalculateSettlementRequestBody(BaseModel):
     participants: list[schemas.Person] = Field(..., min_length=1)
     payments: list[schemas.Payment] = Field(..., min_length=1)
+    constraints: list[schemas.Constraint] = Field(default=[])
 
 
 class CalculateSettlementResponseBody(BaseModel):

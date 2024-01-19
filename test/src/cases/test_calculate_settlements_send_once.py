@@ -29,7 +29,8 @@ class SettlementsConstraints(BaseModel):
                             paid_for=[schemas.Person(name="fuga")],
                             amount=5000,
                         ),
-                    ]
+                    ],
+                    constraints=[schemas.Constraint.send_once],
                 ),
                 SettlementsConstraints(
                     settlements_length=1,
@@ -74,7 +75,8 @@ class SettlementsConstraints(BaseModel):
                             ],
                             amount=5000,
                         ),
-                    ]
+                    ],
+                    constraints=[schemas.Constraint.send_once],
                 ),
                 SettlementsConstraints(
                     settlements_length=4,
@@ -85,7 +87,7 @@ class SettlementsConstraints(BaseModel):
                         schemas.Person(name="D"): Decimal(-2000),
                         schemas.Person(name="E"): Decimal(-2000),
                     },
-                    total_exchange_amount=Decimal(6000)
+                    total_exchange_amount=Decimal(7000)
                 )
             ),
             (
@@ -132,7 +134,8 @@ class SettlementsConstraints(BaseModel):
                             ],
                             amount=5000
                         ),
-                    ]
+                    ],
+                    constraints=[schemas.Constraint.send_once],
                 ),
                 SettlementsConstraints(
                     settlements_length=4,
@@ -143,7 +146,7 @@ class SettlementsConstraints(BaseModel):
                         schemas.Person(name="D"): Decimal(-3000),
                         schemas.Person(name="E"): Decimal(-3000),
                     },
-                    total_exchange_amount=Decimal(6000)
+                    total_exchange_amount=Decimal(8000)
                 )
             ),
             (
@@ -176,7 +179,8 @@ class SettlementsConstraints(BaseModel):
                             ],
                             amount=5000
                         ),
-                    ]
+                    ],
+                    constraints=[schemas.Constraint.send_once],
                 ),
                 SettlementsConstraints(
                     settlements_length=0,
@@ -224,6 +228,7 @@ class SettlementsConstraints(BaseModel):
                             amount=1000
                         ),
                     ],
+                    constraints=[schemas.Constraint.send_once],
                 ),
                 SettlementsConstraints(
                     settlements_length=4,
@@ -234,7 +239,7 @@ class SettlementsConstraints(BaseModel):
                         schemas.Person(name="D"): Decimal(2500),
                         schemas.Person(name="E"): Decimal(2500),
                     },
-                    total_exchange_amount=Decimal(6000)
+                    total_exchange_amount=Decimal(7000)
                 )
             ),
             (
@@ -256,6 +261,7 @@ class SettlementsConstraints(BaseModel):
                             amount=1000
                         ),
                     ],
+                    constraints=[schemas.Constraint.send_once],
                 ),
                 SettlementsConstraints(
                     settlements_length=2,
@@ -273,6 +279,9 @@ def test_normal(comment: str, request_body: services.CalculateSettlementRequestB
     actual_settlements = services.calculate_settlements(request_body)
 
     assert len(actual_settlements.settlements) <= expected_settlements_constraints.settlements_length, comment
+
+    breakpoint()
+
     for person, expected_receive_amount in expected_settlements_constraints.receive_amount.items():
         sum_send_amount = sum(
             [
@@ -295,3 +304,12 @@ def test_normal(comment: str, request_body: services.CalculateSettlementRequestB
             for settlement in actual_settlements.settlements
         ]
     ) <= expected_settlements_constraints.total_exchange_amount, comment
+
+    for person in request_body.participants:
+        assert len(
+            [
+                s
+                for s in actual_settlements.settlements
+                if s.send_by == person
+            ]
+        ) <= 1, comment
