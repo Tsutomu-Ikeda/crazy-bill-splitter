@@ -1,0 +1,10 @@
+name: test-python-app
+on: push
+jobs:
+  test:
+    name: Run tests
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+      - name: Checkout And Build
+        run: docker-compose run --rm test poetry run pytest
