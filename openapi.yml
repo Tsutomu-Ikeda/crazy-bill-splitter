@@ -1,0 +1,89 @@
+openapi: "3.0.0"
+info:
+  title: "Crazy Bill Splitter API"
+  version: "1.0.0"
+paths:
+  /calculate-settlements:
+    post:
+      summary: "Calculate split bill"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+                type: "object"
+                properties:
+                    participants:
+                        type: "array"
+                        items:
+                            type: "string"
+                    payments:
+                        type: "array"
+                        items:
+                            type: "object"
+                            properties:
+                                paid_by:
+                                    type: "string"
+                                paid_for:
+                                    type: "array"
+                                    items:
+                                        type: "string"
+                                amount:
+                                    type: "string"
+                required:
+                    - "participants"
+                    - "payments"
+            example:
+                paricipants:
+                    - "John"
+                    - "Alice"
+                    - "Bob"
+                payments:
+                    - paid_by: "John"
+                      paid_for:
+                        - "Alice"
+                        - "Bob"
+                      amount: "50.00"
+                    - paid_by: "Alice"
+                      paid_for:
+                        - "Bob"
+                      amount: "30.00"
+      responses:
+        '200':
+          description: "Calculation Result"
+          
+          content:
+            application/json:
+                schema: 
+                    type: object
+                    properties:
+                        settlements: 
+                            type: array
+                            items:
+                                type: object
+                                properties:
+                                    send_by:
+                                        type: string
+                                    send_for:
+                                        type: string
+                                    amount:
+                                        type: string
+                example:
+                    settlements:
+                        - send_by: "John"
+                          send_for: "Alice"
+                          amount: "50.00"
+                        - send_by: "Alice"
+                          send_for: "Bob"
+                          amount: "30.00"
+        '400':
+            description: "Bad Request"
+            content:
+                application/json:
+                    schema:
+                        type: object
+                        properties:
+                          error:
+                            type: string
+                    example:
+                        error: "Invalid input data"
