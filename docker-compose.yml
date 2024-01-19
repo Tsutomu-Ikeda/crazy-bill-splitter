@@ -1,9 +1,14 @@
 version: '3'
 services:
+  python-app:
+    build:
+      context: apps/python
+    volumes:
+      - ./apps/python:/app/
   test:
     build:
       context: test
     environment:
-      TARGET_HOST: "http://localhost:8080"
+      TARGET_HOST: "http://python-app:8080"
     volumes:
       - ./test:/app/
