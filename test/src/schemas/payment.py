@@ -13,4 +13,10 @@ class Payment(BaseModel):
 class Settlement(BaseModel):
     send_by: Person = Field(...)
     send_for: Person = Field(...)
-    amount: Decimal = Field(..., gt=0, le=100_000, decimal_places=2)
+    amount: Decimal = Field(..., decimal_places=2)
+
+    def __str__(self) -> str:
+        return f"{self.send_by.name} sends {self.amount} to {self.send_for.name}"
+
+    def __repr__(self) -> str:
+        return self.__str__()

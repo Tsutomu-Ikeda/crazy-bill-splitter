@@ -13,6 +13,12 @@ class CalculateSettlementRequestBody(BaseModel):
 class CalculateSettlementResponseBody(BaseModel):
     settlements: list[schemas.Settlement] = Field(...)
 
+    def __str__(self) -> str:
+        return "\n".join([str(settlement) for settlement in self.settlements])
+
+    def __repr__(self) -> str:
+        return self.__str__()
+
 
 def calculate_settlements(request_body: CalculateSettlementRequestBody) -> CalculateSettlementResponseBody:
     resp = requests.post(
