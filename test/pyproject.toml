@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "crazy-bill-splitter-test"
+name = "src"
 version = "0.1.0"
 description = ""
 authors = ["None"]
@@ -8,9 +8,15 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.12"
 pytest = "^7.4.4"
+pydantic = "^2.5.3"
+requests = "^2.31.0"
+pydantic-settings = "^2.1.0"
 
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
+[tool.pytest.ini_options]
+pythonpath = "src"
+disable_test_id_escaping_and_forfeit_all_rights_to_community_support = true
