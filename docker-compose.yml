@@ -12,3 +12,5 @@ services:
       TARGET_HOST: "http://python-app:8080"
     volumes:
       - ./test:/app/
+    depends_on:
+      - python-app
