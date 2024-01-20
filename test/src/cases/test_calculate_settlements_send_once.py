@@ -405,6 +405,113 @@ class SettlementsConstraints(BaseModel):
                 )
             ),
             (
+                "連結でないグラフが発生しうるケース 最大支払い者が最小可能受け取り者に支払うというロジックが使えないケース",
+                services.CalculateSettlementRequestBody(
+                    participants=[
+                        schemas.Person(name="A"),
+                        schemas.Person(name="B"),
+                        schemas.Person(name="C"),
+                        schemas.Person(name="D"),
+                        schemas.Person(name="E"),
+                        schemas.Person(name="F"),
+                        schemas.Person(name="G"),
+                    ],
+                    payments=[
+                        schemas.Payment(
+                            paid_by=schemas.Person(name="A"),
+                            paid_for=[
+                                schemas.Person(name="A"),
+                                schemas.Person(name="B"),
+                                schemas.Person(name="C"),
+                                schemas.Person(name="D"),
+                                schemas.Person(name="E"),
+                                schemas.Person(name="F"),
+                                schemas.Person(name="G"),
+                            ],
+                            amount=8500
+                        ),
+                        schemas.Payment(
+                            paid_by=schemas.Person(name="B"),
+                            paid_for=[
+                                schemas.Person(name="A"),
+                                schemas.Person(name="B"),
+                                schemas.Person(name="C"),
+                                schemas.Person(name="D"),
+                                schemas.Person(name="E"),
+                                schemas.Person(name="F"),
+                                schemas.Person(name="G"),
+                            ],
+                            amount=9000
+                        ),
+                        schemas.Payment(
+                            paid_by=schemas.Person(name="C"),
+                            paid_for=[
+                                schemas.Person(name="A"),
+                                schemas.Person(name="B"),
+                                schemas.Person(name="C"),
+                                schemas.Person(name="D"),
+                                schemas.Person(name="E"),
+                                schemas.Person(name="F"),
+                                schemas.Person(name="G"),
+                            ],
+                            amount=1000
+                        ),
+                        schemas.Payment(
+                            paid_by=schemas.Person(name="D"),
+                            paid_for=[
+                                schemas.Person(name="A"),
+                                schemas.Person(name="B"),
+                                schemas.Person(name="C"),
+                                schemas.Person(name="D"),
+                                schemas.Person(name="E"),
+                                schemas.Person(name="F"),
+                                schemas.Person(name="G"),
+                            ],
+                            amount=1000
+                        ),
+                        schemas.Payment(
+                            paid_by=schemas.Person(name="E"),
+                            paid_for=[
+                                schemas.Person(name="A"),
+                                schemas.Person(name="B"),
+                                schemas.Person(name="C"),
+                                schemas.Person(name="D"),
+                                schemas.Person(name="E"),
+                                schemas.Person(name="F"),
+                                schemas.Person(name="G"),
+                            ],
+                            amount=1000
+                        ),
+                        schemas.Payment(
+                            paid_by=schemas.Person(name="F"),
+                            paid_for=[
+                                schemas.Person(name="A"),
+                                schemas.Person(name="B"),
+                                schemas.Person(name="C"),
+                                schemas.Person(name="D"),
+                                schemas.Person(name="E"),
+                                schemas.Person(name="F"),
+                                schemas.Person(name="G"),
+                            ],
+                            amount=500
+                        ),
+                    ],
+                ),
+                SettlementsConstraints(
+                    settlements_length=5,
+                    receive_amount={
+                        schemas.Person(name="A"): Decimal(5500),
+                        schemas.Person(name="B"): Decimal(6000),
+                        schemas.Person(name="C"): Decimal(-2000),
+                        schemas.Person(name="D"): Decimal(-2000),
+                        schemas.Person(name="E"): Decimal(-2000),
+                        schemas.Person(name="F"): Decimal(-2500),
+                        schemas.Person(name="G"): Decimal(-3000),
+                    },
+                    total_exchange_amount=Decimal(11500)
+                )
+            ),
+            (
                 "3人で割り勘をして、割り切れないケース",
                 services.CalculateSettlementRequestBody(
                     participants=[
