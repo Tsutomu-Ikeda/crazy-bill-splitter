@@ -18,30 +18,73 @@ def calculate_settlements(*, payments: list[schemas.Payment], participants: list
 
     settlements = []
 
-    for person in receivable_amounts:
-        if receivable_amounts[person] >= 0:
-            continue
+    positive_receivable_amounts = {
+        person: receivable_amounts[person]
+        for person in receivable_amounts
+        if receivable_amounts[person] > 0
+    }
+    negative_receivable_amounts = {
+        person: receivable_amounts[person]
+        for person in receivable_amounts
+        if receivable_amounts[person] < 0
+    }
 
-        perfect_receive_candidates = sorted(
-            (
-                receive_person
-                for receive_person in receivable_amounts
-                if receivable_amounts[receive_person] == -receivable_amounts[person]
-            ),
-            key=lambda p: receivable_amounts[p],
-        )
+    if len(positive_receivable_amounts) <= len(negative_receivable_amounts):
+        # negative_receivable_amountsの部分和でpositive_receivable_amountsの各要素を満たせるかどうかを調べる
+        # できる場合、settlementsに追加する
+        for person in positive_receivable_amounts:
+            exchange_amount = positive_receivable_amounts[person]
 
-        if len(perfect_receive_candidates) >= 1:
-            exchange_amount = -receivable_amounts[person]
-            receivable_amounts[person] += exchange_amount
-            receivable_amounts[perfect_receive_candidates[0]] -= exchange_amount
-            settlements.append(
-                schemas.Settlement(
-                    send_by=person,
-                    send_for=perfect_receive_candidates[0],
-                    amount=Decimal(f"{float(exchange_amount):.2f}"),
-                )
-            )
+            len_positive_receivable_amounts = len(negative_receivable_amounts)
+
+            for bit in range(1 << len_positive_receivable_amounts):
+                target_person = [
+                    person
+                    for i, person
+                    in enumerate(negative_receivable_amounts)
+                    if ((bit >> i) & 1) == 1
+                ]
+
+                if sum(-negative_receivable_amounts[person] for person in target_person) == exchange_amount:
+                    for target in target_person:
+                        settlements.append(
+                            schemas.Settlement(
+                                send_by=target,
+                                send_for=person,
+                                amount=Decimal(f"{float(-negative_receivable_amounts[target]):.2f}"),
+                            )
+                        )
+                        receivable_amounts[target] = Fraction(0)
+
+                    receivable_amounts[person] = Fraction(0)
+    else:
+        # positive_receivable_amountsの部分和でnegative_receivable_amountsの各要素を満たせるかどうかを調べる
+        # できる場合、settlementsに追加する
+        for person in negative_receivable_amounts:
+            exchange_amount = -negative_receivable_amounts[person]
+
+            len_negative_receivable_amounts = len(positive_receivable_amounts)
+
+            for bit in range(1 << len_negative_receivable_amounts):
+                target_person = [
+                    person
+                    for i, person
+                    in enumerate(positive_receivable_amounts)
+                    if ((bit >> i) & 1) == 1
+                ]
+
+                if sum(positive_receivable_amounts[person] for person in target_person) == exchange_amount:
+                    for target in target_person:
+                        settlements.append(
+                            schemas.Settlement(
+                                send_by=person,
+                                send_for=target,
+                                amount=Decimal(f"{float(positive_receivable_amounts[target]):.2f}"),
+                            )
+                        )
+                        receivable_amounts[target] = Fraction(0)
+
+                    receivable_amounts[person] = Fraction(0)
 
     while True:
         person_with_max_receivable_amount = max(receivable_amounts, key=lambda person: receivable_amounts[person])
