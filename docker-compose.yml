@@ -5,6 +5,11 @@ services:
       context: apps/python
     volumes:
       - ./apps/python:/app/
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health-check"]
+      interval: 3s
+      timeout: 60s
+      retries: 20
   test:
     build:
       context: test
@@ -13,4 +18,6 @@ services:
     volumes:
       - ./test:/app/
     depends_on:
-      - python-app
+      python-app:
+        condition: service_healthy
+
