@@ -505,6 +505,74 @@ class SettlementsConstraints(BaseModel):
                 )
             ),
             (
+                "部分和で最適化できるケース、複数の部分和が存在するケース",
+                services.CalculateSettlementRequestBody(
+                    participants=[
+                        schemas.Person(name="A"),
+                        schemas.Person(name="B"),
+                        schemas.Person(name="C"),
+                        schemas.Person(name="D"),
+                        schemas.Person(name="E"),
+                        schemas.Person(name="F"),
+                        schemas.Person(name="G"),
+                    ],
+                    payments=[
+                        schemas.Payment(
+                            paid_by=schemas.Person(name="A"),
+                            paid_for=[
+                                schemas.Person(name="A"),
+                                schemas.Person(name="B"),
+                                schemas.Person(name="C"),
+                                schemas.Person(name="D"),
+                                schemas.Person(name="E"),
+                                schemas.Person(name="F"),
+                                schemas.Person(name="G"),
+                            ],
+                            amount=1000
+                        ),
+                        schemas.Payment(
+                            paid_by=schemas.Person(name="C"),
+                            paid_for=[
+                                schemas.Person(name="A"),
+                                schemas.Person(name="B"),
+                                schemas.Person(name="C"),
+                                schemas.Person(name="D"),
+                                schemas.Person(name="E"),
+                                schemas.Person(name="F"),
+                                schemas.Person(name="G"),
+                            ],
+                            amount=7000
+                        ),
+                        schemas.Payment(
+                            paid_by=schemas.Person(name="D"),
+                            paid_for=[
+                                schemas.Person(name="A"),
+                                schemas.Person(name="B"),
+                                schemas.Person(name="C"),
+                                schemas.Person(name="D"),
+                                schemas.Person(name="E"),
+                                schemas.Person(name="F"),
+                                schemas.Person(name="G"),
+                            ],
+                            amount=6000
+                        ),
+                    ],
+                ),
+                SettlementsConstraints(
+                    settlements_length=5,
+                    receive_amount={
+                        schemas.Person(name="A"): Decimal(-1000),
+                        schemas.Person(name="B"): Decimal(-2000),
+                        schemas.Person(name="C"): Decimal(5000),
+                        schemas.Person(name="D"): Decimal(4000),
+                        schemas.Person(name="E"): Decimal(-2000),
+                        schemas.Person(name="F"): Decimal(-2000),
+                        schemas.Person(name="G"): Decimal(-2000),
+                    },
+                    total_exchange_amount=Decimal(9000)
+                )
+            ),
+            (
                 "3人で割り勘をして、割り切れないケース",
                 services.CalculateSettlementRequestBody(
                     participants=[

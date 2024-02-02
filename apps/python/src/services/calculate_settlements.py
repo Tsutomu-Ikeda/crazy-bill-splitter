@@ -55,6 +55,7 @@ def calculate_settlements(*, payments: list[schemas.Payment], participants: list
                             )
                         )
                         receivable_amounts[target] = Fraction(0)
+                        negative_receivable_amounts[target] = Fraction(0)
 
                     receivable_amounts[person] = Fraction(0)
     else:
@@ -83,6 +84,7 @@ def calculate_settlements(*, payments: list[schemas.Payment], participants: list
                             )
                         )
                         receivable_amounts[target] = Fraction(0)
+                        positive_receivable_amounts[target] = Fraction(0)
 
                     receivable_amounts[person] = Fraction(0)
 
