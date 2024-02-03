@@ -431,6 +431,135 @@ class SettlementsConstraints(BaseModel):
                 )
             ),
             (
+                "20名で割り勘をしたケース",
+                services.CalculateSettlementRequestBody(
+                    participants=helpers.People.alphabetical_range("A", "T").members,
+                    payments=[
+                        schemas.Payment(
+                            paid_by=schemas.Person(name="A"),
+                            paid_for=helpers.People.alphabetical_range("A", "T").members,
+                            amount=206
+                        ),
+                        schemas.Payment(
+                            paid_by=schemas.Person(name="B"),
+                            paid_for=helpers.People.alphabetical_range("A", "T").members,
+                            amount=206
+                        ),
+                        schemas.Payment(
+                            paid_by=schemas.Person(name="C"),
+                            paid_for=helpers.People.alphabetical_range("A", "T").members,
+                            amount=206
+                        ),
+                        schemas.Payment(
+                            paid_by=schemas.Person(name="D"),
+                            paid_for=helpers.People.alphabetical_range("A", "T").members,
+                            amount=606
+                        ),
+                        schemas.Payment(
+                            paid_by=schemas.Person(name="E"),
+                            paid_for=helpers.People.alphabetical_range("A", "T").members,
+                            amount=407
+                        ),
+                        schemas.Payment(
+                            paid_by=schemas.Person(name="F"),
+                            paid_for=helpers.People.alphabetical_range("A", "T").members,
+                            amount=407
+                        ),
+                        schemas.Payment(
+                            paid_by=schemas.Person(name="G"),
+                            paid_for=helpers.People.alphabetical_range("A", "T").members,
+                            amount=407
+                        ),
+                        schemas.Payment(
+                            paid_by=schemas.Person(name="H"),
+                            paid_for=helpers.People.alphabetical_range("A", "T").members,
+                            amount=3
+                        ),
+                        schemas.Payment(
+                            paid_by=schemas.Person(name="I"),
+                            paid_for=helpers.People.alphabetical_range("A", "T").members,
+                            amount=201
+                        ),
+                        schemas.Payment(
+                            paid_by=schemas.Person(name="J"),
+                            paid_for=helpers.People.alphabetical_range("A", "T").members,
+                            amount=201
+                        ),
+                        schemas.Payment(
+                            paid_by=schemas.Person(name="K"),
+                            paid_for=helpers.People.alphabetical_range("A", "T").members,
+                            amount=201
+                        ),
+                        schemas.Payment(
+                            paid_by=schemas.Person(name="L"),
+                            paid_for=helpers.People.alphabetical_range("A", "T").members,
+                            amount=621
+                        ),
+                        schemas.Payment(
+                            paid_by=schemas.Person(name="M"),
+                            paid_for=helpers.People.alphabetical_range("A", "T").members,
+                            amount=408
+                        ),
+                        schemas.Payment(
+                            paid_by=schemas.Person(name="N"),
+                            paid_for=helpers.People.alphabetical_range("A", "T").members,
+                            amount=408
+                        ),
+                        schemas.Payment(
+                            paid_by=schemas.Person(name="O"),
+                            paid_for=helpers.People.alphabetical_range("A", "T").members,
+                            amount=408
+                        ),
+                        schemas.Payment(
+                            paid_by=schemas.Person(name="Q"),
+                            paid_for=helpers.People.alphabetical_range("A", "T").members,
+                            amount=509
+                        ),
+                        schemas.Payment(
+                            paid_by=schemas.Person(name="R"),
+                            paid_for=helpers.People.alphabetical_range("A", "T").members,
+                            amount=434
+                        ),
+                        schemas.Payment(
+                            paid_by=schemas.Person(name="S"),
+                            paid_for=helpers.People.alphabetical_range("A", "T").members,
+                            amount=101
+                        ),
+                        schemas.Payment(
+                            paid_by=schemas.Person(name="T"),
+                            paid_for=helpers.People.alphabetical_range("A", "T").members,
+                            amount=180
+                        ),
+                    ],
+                ),
+                SettlementsConstraints(
+                    settlements_length=14,
+                    receive_amount={
+                        schemas.Person(name="A"): Decimal(-100),
+                        schemas.Person(name="B"): Decimal(-100),
+                        schemas.Person(name="C"): Decimal(-100),
+                        schemas.Person(name="D"): Decimal(300),
+                        schemas.Person(name="E"): Decimal(101),
+                        schemas.Person(name="F"): Decimal(101),
+                        schemas.Person(name="G"): Decimal(101),
+                        schemas.Person(name="H"): Decimal(-303),
+                        schemas.Person(name="I"): Decimal(-105),
+                        schemas.Person(name="J"): Decimal(-105),
+                        schemas.Person(name="K"): Decimal(-105),
+                        schemas.Person(name="L"): Decimal(315),
+                        schemas.Person(name="M"): Decimal(102),
+                        schemas.Person(name="N"): Decimal(102),
+                        schemas.Person(name="O"): Decimal(102),
+                        schemas.Person(name="P"): Decimal(-306),
+                        schemas.Person(name="Q"): Decimal(203),
+                        schemas.Person(name="R"): Decimal(128),
+                        schemas.Person(name="S"): Decimal(-205),
+                        schemas.Person(name="T"): Decimal(-126),
+                    },
+                    total_exchange_amount=Decimal(1555)
+                )
+            ),
+            (
                 "3人で割り勘をして、割り切れないケース",
                 services.CalculateSettlementRequestBody(
                     participants=helpers.People.alphabetical_range("A", "C").members,
