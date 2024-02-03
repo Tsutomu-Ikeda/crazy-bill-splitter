@@ -533,7 +533,7 @@ class SettlementsConstraints(BaseModel):
                     ],
                 ),
                 SettlementsConstraints(
-                    settlements_length=14,
+                    settlements_length=15,
                     receive_amount={
                         schemas.Person(name="A"): Decimal(-100),
                         schemas.Person(name="B"): Decimal(-100),
