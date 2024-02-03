@@ -4,6 +4,7 @@ import pytest
 
 import schemas
 import services
+import helpers
 
 
 class SettlementsConstraints(BaseModel):
@@ -45,34 +46,16 @@ class SettlementsConstraints(BaseModel):
             (
                 "A,Bがそれぞれ全員分の5,000円を支払ったケース",
                 services.CalculateSettlementRequestBody(
-                    participants=[
-                        schemas.Person(name="A"),
-                        schemas.Person(name="B"),
-                        schemas.Person(name="C"),
-                        schemas.Person(name="D"),
-                        schemas.Person(name="E"),
-                    ],
+                    participants=helpers.People.alphabetical_range("A", "E").members,
                     payments=[
                         schemas.Payment(
                             paid_by=schemas.Person(name="A"),
-                            paid_for=[
-                                schemas.Person(name="A"),
-                                schemas.Person(name="B"),
-                                schemas.Person(name="C"),
-                                schemas.Person(name="D"),
-                                schemas.Person(name="E"),
-                            ],
+                            paid_for=helpers.People.alphabetical_range("A", "E").members,
                             amount=5000,
                         ),
                         schemas.Payment(
                             paid_by=schemas.Person(name="B"),
-                            paid_for=[
-                                schemas.Person(name="A"),
-                                schemas.Person(name="B"),
-                                schemas.Person(name="C"),
-                                schemas.Person(name="D"),
-                                schemas.Person(name="E"),
-                            ],
+                            paid_for=helpers.People.alphabetical_range("A", "E").members,
                             amount=5000,
                         ),
                     ],
@@ -93,45 +76,21 @@ class SettlementsConstraints(BaseModel):
             (
                 "A,B,Cがそれぞれ全員分の5,000円を支払ったケース",
                 services.CalculateSettlementRequestBody(
-                    participants=[
-                        schemas.Person(name="A"),
-                        schemas.Person(name="B"),
-                        schemas.Person(name="C"),
-                        schemas.Person(name="D"),
-                        schemas.Person(name="E"),
-                    ],
+                    participants=helpers.People.alphabetical_range("A", "E").members,
                     payments=[
                         schemas.Payment(
                             paid_by=schemas.Person(name="A"),
-                            paid_for=[
-                                schemas.Person(name="A"),
-                                schemas.Person(name="B"),
-                                schemas.Person(name="C"),
-                                schemas.Person(name="D"),
-                                schemas.Person(name="E"),
-                            ],
+                            paid_for=helpers.People.alphabetical_range("A", "E").members,
                             amount=5000
                         ),
                         schemas.Payment(
                             paid_by=schemas.Person(name="B"),
-                            paid_for=[
-                                schemas.Person(name="A"),
-                                schemas.Person(name="B"),
-                                schemas.Person(name="C"),
-                                schemas.Person(name="D"),
-                                schemas.Person(name="E"),
-                            ],
+                            paid_for=helpers.People.alphabetical_range("A", "E").members,
                             amount=5000
                         ),
                         schemas.Payment(
                             paid_by=schemas.Person(name="C"),
-                            paid_for=[
-                                schemas.Person(name="A"),
-                                schemas.Person(name="B"),
-                                schemas.Person(name="C"),
-                                schemas.Person(name="D"),
-                                schemas.Person(name="E"),
-                            ],
+                            paid_for=helpers.People.alphabetical_range("A", "E").members,
                             amount=5000
                         ),
                     ],
@@ -152,11 +111,7 @@ class SettlementsConstraints(BaseModel):
             (
                 "循環して5,000円ずつ支払ったケース",
                 services.CalculateSettlementRequestBody(
-                    participants=[
-                        schemas.Person(name="A"),
-                        schemas.Person(name="B"),
-                        schemas.Person(name="C"),
-                    ],
+                    participants=helpers.People.alphabetical_range("A", "C").members,
                     payments=[
                         schemas.Payment(
                             paid_by=schemas.Person(name="A"),
@@ -195,13 +150,7 @@ class SettlementsConstraints(BaseModel):
             (
                 "B,CがA,D,Eに精算を行う必要があるケース",
                 services.CalculateSettlementRequestBody(
-                    participants=[
-                        schemas.Person(name="A"),
-                        schemas.Person(name="B"),
-                        schemas.Person(name="C"),
-                        schemas.Person(name="D"),
-                        schemas.Person(name="E"),
-                    ],
+                    participants=helpers.People.alphabetical_range("A", "E").members,
                     payments=[
                         schemas.Payment(
                             paid_by=schemas.Person(name="D"),
@@ -245,67 +194,31 @@ class SettlementsConstraints(BaseModel):
             (
                 "連結でないグラフが発生しうるケース",
                 services.CalculateSettlementRequestBody(
-                    participants=[
-                        schemas.Person(name="A"),
-                        schemas.Person(name="B"),
-                        schemas.Person(name="C"),
-                        schemas.Person(name="D"),
-                        schemas.Person(name="E"),
-                    ],
+                    participants=helpers.People.alphabetical_range("A", "E").members,
                     payments=[
                         schemas.Payment(
                             paid_by=schemas.Person(name="A"),
-                            paid_for=[
-                                schemas.Person(name="A"),
-                                schemas.Person(name="B"),
-                                schemas.Person(name="C"),
-                                schemas.Person(name="D"),
-                                schemas.Person(name="E"),
-                            ],
+                            paid_for=helpers.People.alphabetical_range("A", "E").members,
                             amount=13000
                         ),
                         schemas.Payment(
                             paid_by=schemas.Person(name="B"),
-                            paid_for=[
-                                schemas.Person(name="A"),
-                                schemas.Person(name="B"),
-                                schemas.Person(name="C"),
-                                schemas.Person(name="D"),
-                                schemas.Person(name="E"),
-                            ],
+                            paid_for=helpers.People.alphabetical_range("A", "E").members,
                             amount=12000
                         ),
                         schemas.Payment(
                             paid_by=schemas.Person(name="C"),
-                            paid_for=[
-                                schemas.Person(name="A"),
-                                schemas.Person(name="B"),
-                                schemas.Person(name="C"),
-                                schemas.Person(name="D"),
-                                schemas.Person(name="E"),
-                            ],
+                            paid_for=helpers.People.alphabetical_range("A", "E").members,
                             amount=11500
                         ),
                         schemas.Payment(
                             paid_by=schemas.Person(name="D"),
-                            paid_for=[
-                                schemas.Person(name="A"),
-                                schemas.Person(name="B"),
-                                schemas.Person(name="C"),
-                                schemas.Person(name="D"),
-                                schemas.Person(name="E"),
-                            ],
+                            paid_for=helpers.People.alphabetical_range("A", "E").members,
                             amount=6000
                         ),
                         schemas.Payment(
                             paid_by=schemas.Person(name="E"),
-                            paid_for=[
-                                schemas.Person(name="A"),
-                                schemas.Person(name="B"),
-                                schemas.Person(name="C"),
-                                schemas.Person(name="D"),
-                                schemas.Person(name="E"),
-                            ],
+                            paid_for=helpers.People.alphabetical_range("A", "E").members,
                             amount=2500
                         ),
                     ],
@@ -326,67 +239,31 @@ class SettlementsConstraints(BaseModel):
             (
                 "連結でないグラフが発生しうるケース 最大支払い者が最大受け取り者に支払うというロジックが使えないケース",
                 services.CalculateSettlementRequestBody(
-                    participants=[
-                        schemas.Person(name="A"),
-                        schemas.Person(name="B"),
-                        schemas.Person(name="C"),
-                        schemas.Person(name="D"),
-                        schemas.Person(name="E"),
-                    ],
+                    participants=helpers.People.alphabetical_range("A", "E").members,
                     payments=[
                         schemas.Payment(
                             paid_by=schemas.Person(name="A"),
-                            paid_for=[
-                                schemas.Person(name="A"),
-                                schemas.Person(name="B"),
-                                schemas.Person(name="C"),
-                                schemas.Person(name="D"),
-                                schemas.Person(name="E"),
-                            ],
+                            paid_for=helpers.People.alphabetical_range("A", "E").members,
                             amount=9000
                         ),
                         schemas.Payment(
                             paid_by=schemas.Person(name="B"),
-                            paid_for=[
-                                schemas.Person(name="A"),
-                                schemas.Person(name="B"),
-                                schemas.Person(name="C"),
-                                schemas.Person(name="D"),
-                                schemas.Person(name="E"),
-                            ],
+                            paid_for=helpers.People.alphabetical_range("A", "E").members,
                             amount=8000
                         ),
                         schemas.Payment(
                             paid_by=schemas.Person(name="C"),
-                            paid_for=[
-                                schemas.Person(name="A"),
-                                schemas.Person(name="B"),
-                                schemas.Person(name="C"),
-                                schemas.Person(name="D"),
-                                schemas.Person(name="E"),
-                            ],
+                            paid_for=helpers.People.alphabetical_range("A", "E").members,
                             amount=3500
                         ),
                         schemas.Payment(
                             paid_by=schemas.Person(name="D"),
-                            paid_for=[
-                                schemas.Person(name="A"),
-                                schemas.Person(name="B"),
-                                schemas.Person(name="C"),
-                                schemas.Person(name="D"),
-                                schemas.Person(name="E"),
-                            ],
+                            paid_for=helpers.People.alphabetical_range("A", "E").members,
                             amount=2500
                         ),
                         schemas.Payment(
                             paid_by=schemas.Person(name="E"),
-                            paid_for=[
-                                schemas.Person(name="A"),
-                                schemas.Person(name="B"),
-                                schemas.Person(name="C"),
-                                schemas.Person(name="D"),
-                                schemas.Person(name="E"),
-                            ],
+                            paid_for=helpers.People.alphabetical_range("A", "E").members,
                             amount=2000
                         ),
                     ],
@@ -407,92 +284,36 @@ class SettlementsConstraints(BaseModel):
             (
                 "連結でないグラフが発生しうるケース 最大支払い者が最小可能受け取り者に支払うというロジックが使えないケース",
                 services.CalculateSettlementRequestBody(
-                    participants=[
-                        schemas.Person(name="A"),
-                        schemas.Person(name="B"),
-                        schemas.Person(name="C"),
-                        schemas.Person(name="D"),
-                        schemas.Person(name="E"),
-                        schemas.Person(name="F"),
-                        schemas.Person(name="G"),
-                    ],
+                    participants=helpers.People.alphabetical_range("A", "G").members,
                     payments=[
                         schemas.Payment(
                             paid_by=schemas.Person(name="A"),
-                            paid_for=[
-                                schemas.Person(name="A"),
-                                schemas.Person(name="B"),
-                                schemas.Person(name="C"),
-                                schemas.Person(name="D"),
-                                schemas.Person(name="E"),
-                                schemas.Person(name="F"),
-                                schemas.Person(name="G"),
-                            ],
+                            paid_for=helpers.People.alphabetical_range("A", "G").members,
                             amount=8500
                         ),
                         schemas.Payment(
                             paid_by=schemas.Person(name="B"),
-                            paid_for=[
-                                schemas.Person(name="A"),
-                                schemas.Person(name="B"),
-                                schemas.Person(name="C"),
-                                schemas.Person(name="D"),
-                                schemas.Person(name="E"),
-                                schemas.Person(name="F"),
-                                schemas.Person(name="G"),
-                            ],
+                            paid_for=helpers.People.alphabetical_range("A", "G").members,
                             amount=9000
                         ),
                         schemas.Payment(
                             paid_by=schemas.Person(name="C"),
-                            paid_for=[
-                                schemas.Person(name="A"),
-                                schemas.Person(name="B"),
-                                schemas.Person(name="C"),
-                                schemas.Person(name="D"),
-                                schemas.Person(name="E"),
-                                schemas.Person(name="F"),
-                                schemas.Person(name="G"),
-                            ],
+                            paid_for=helpers.People.alphabetical_range("A", "G").members,
                             amount=1000
                         ),
                         schemas.Payment(
                             paid_by=schemas.Person(name="D"),
-                            paid_for=[
-                                schemas.Person(name="A"),
-                                schemas.Person(name="B"),
-                                schemas.Person(name="C"),
-                                schemas.Person(name="D"),
-                                schemas.Person(name="E"),
-                                schemas.Person(name="F"),
-                                schemas.Person(name="G"),
-                            ],
+                            paid_for=helpers.People.alphabetical_range("A", "G").members,
                             amount=1000
                         ),
                         schemas.Payment(
                             paid_by=schemas.Person(name="E"),
-                            paid_for=[
-                                schemas.Person(name="A"),
-                                schemas.Person(name="B"),
-                                schemas.Person(name="C"),
-                                schemas.Person(name="D"),
-                                schemas.Person(name="E"),
-                                schemas.Person(name="F"),
-                                schemas.Person(name="G"),
-                            ],
+                            paid_for=helpers.People.alphabetical_range("A", "G").members,
                             amount=1000
                         ),
                         schemas.Payment(
                             paid_by=schemas.Person(name="F"),
-                            paid_for=[
-                                schemas.Person(name="A"),
-                                schemas.Person(name="B"),
-                                schemas.Person(name="C"),
-                                schemas.Person(name="D"),
-                                schemas.Person(name="E"),
-                                schemas.Person(name="F"),
-                                schemas.Person(name="G"),
-                            ],
+                            paid_for=helpers.People.alphabetical_range("A", "G").members,
                             amount=500
                         ),
                     ],
@@ -514,19 +335,11 @@ class SettlementsConstraints(BaseModel):
             (
                 "3人で割り勘をして、割り切れないケース",
                 services.CalculateSettlementRequestBody(
-                    participants=[
-                        schemas.Person(name="A"),
-                        schemas.Person(name="B"),
-                        schemas.Person(name="C"),
-                    ],
+                    participants=helpers.People.alphabetical_range("A", "C").members,
                     payments=[
                         schemas.Payment(
                             paid_by=schemas.Person(name="A"),
-                            paid_for=[
-                                schemas.Person(name="A"),
-                                schemas.Person(name="B"),
-                                schemas.Person(name="C"),
-                            ],
+                            paid_for=helpers.People.alphabetical_range("A", "C").members,
                             amount=1000
                         ),
                     ],
