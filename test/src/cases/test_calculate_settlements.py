@@ -560,6 +560,69 @@ class SettlementsConstraints(BaseModel):
                 )
             ),
             (
+                "min(m, n)が2のグループが2つできるケース",
+                services.CalculateSettlementRequestBody(
+                    participants=helpers.People.alphabetical_range("A", "I").members,
+                    payments=[
+                        schemas.Payment(
+                            paid_by=schemas.Person(name="A"),
+                            paid_for=helpers.People.alphabetical_range("A", "I").members,
+                            amount=6000
+                        ),
+                        schemas.Payment(
+                            paid_by=schemas.Person(name="B"),
+                            paid_for=helpers.People.alphabetical_range("A", "I").members,
+                            amount=7000
+                        ),
+                        schemas.Payment(
+                            paid_by=schemas.Person(name="D"),
+                            paid_for=helpers.People.alphabetical_range("A", "I").members,
+                            amount=3500
+                        ),
+                        schemas.Payment(
+                            paid_by=schemas.Person(name="E"),
+                            paid_for=helpers.People.alphabetical_range("A", "I").members,
+                            amount=3500
+                        ),
+                        schemas.Payment(
+                            paid_by=schemas.Person(name="F"),
+                            paid_for=helpers.People.alphabetical_range("A", "I").members,
+                            amount=9100
+                        ),
+                        schemas.Payment(
+                            paid_by=schemas.Person(name="G"),
+                            paid_for=helpers.People.alphabetical_range("A", "I").members,
+                            amount=6200
+                        ),
+                        schemas.Payment(
+                            paid_by=schemas.Person(name="H"),
+                            paid_for=helpers.People.alphabetical_range("A", "I").members,
+                            amount=300
+                        ),
+                        schemas.Payment(
+                            paid_by=schemas.Person(name="I"),
+                            paid_for=helpers.People.alphabetical_range("A", "I").members,
+                            amount=400
+                        ),
+                    ],
+                ),
+                SettlementsConstraints(
+                    settlements_length=7,
+                    receive_amount={
+                        schemas.Person(name="A"): Decimal(2000),
+                        schemas.Person(name="B"): Decimal(3000),
+                        schemas.Person(name="C"): Decimal(-4000),
+                        schemas.Person(name="D"): Decimal(-500),
+                        schemas.Person(name="E"): Decimal(-500),
+                        schemas.Person(name="F"): Decimal(5100),
+                        schemas.Person(name="G"): Decimal(2200),
+                        schemas.Person(name="H"): Decimal(-3700),
+                        schemas.Person(name="I"): Decimal(-3600),
+                    },
+                    total_exchange_amount=Decimal(12300)
+                )
+            ),
+            (
                 "3人で割り勘をして、割り切れないケース",
                 services.CalculateSettlementRequestBody(
                     participants=helpers.People.alphabetical_range("A", "C").members,
