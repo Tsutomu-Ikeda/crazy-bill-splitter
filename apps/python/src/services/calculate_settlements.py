@@ -66,7 +66,7 @@ def __create_settlement_groups_recursively(*, receivable_amounts: dict[schemas.P
         }
 
         # NOTE: 名前ではなく金額のみで判断することで、組み合わせを減らす
-        sub_debtors_text = "-".join(sorted(str(receivable_amounts[p]) for p in sub_debtors))
+        sub_debtors_text = ";".join(sorted(str(receivable_amounts[p]) for p in sub_debtors))
 
         for j in range(1, 1 << len(creditors)):
             sub_creditors = {
@@ -75,7 +75,7 @@ def __create_settlement_groups_recursively(*, receivable_amounts: dict[schemas.P
                 in enumerate(creditors)
                 if ((j >> k) & 1) == 1
             }
-            sub_creditors_text = "-".join(sorted(str(receivable_amounts[p]) for p in sub_creditors))
+            sub_creditors_text = ";".join(sorted(str(receivable_amounts[p]) for p in sub_creditors))
 
             if f"{sub_debtors_text}:{sub_creditors_text}" in visited:
                 continue
