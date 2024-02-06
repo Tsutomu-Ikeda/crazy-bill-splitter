@@ -1,10 +1,25 @@
 from decimal import Decimal
 from fractions import Fraction
+import itertools
 
 import schemas
 
 
 def calculate_settlements(*, payments: list[schemas.Payment], participants: list[schemas.Person]) -> list[schemas.Settlement]:
+    receivable_amounts = __calculate_receivable_amounts(payments=payments, participants=participants)
+    settlement_groups = __create_settlement_groups_recursively(receivable_amounts=receivable_amounts)
+
+    settlements = list(itertools.chain.from_iterable(
+        __create_settlements_greedy(
+            receivable_amounts={person: receivable_amounts[person] for person in settlement_group},
+        )
+        for settlement_group in settlement_groups
+    ))
+
+    return settlements
+
+
+def __calculate_receivable_amounts(*, payments: list[schemas.Payment], participants: list[schemas.Person]) -> dict[schemas.Person, Fraction]:
     receivable_amounts = {person: Fraction(0, 1) for person in participants}
 
     for payment in payments:
@@ -16,83 +31,102 @@ def calculate_settlements(*, payments: list[schemas.Payment], participants: list
 
             receivable_amounts[person] -= Fraction(payment.amount, len(payment.paid_for))
 
+    return receivable_amounts
+
+
+__create_settlement_groups_recursively_memo = dict()
+
+
+def __create_settlement_groups_recursively(*, receivable_amounts: dict[schemas.Person, Fraction]) -> list[list[schemas.Person]]:
+    memo_key = "-".join(sorted(f"{person.name},{receivable_amounts[person]}" for person in receivable_amounts))
+
+    if memo_key in __create_settlement_groups_recursively_memo:
+        return __create_settlement_groups_recursively_memo[memo_key]
+
+    if len(receivable_amounts) == 0:
+        return []
+
+    # 債務者
+    debtors = {person: receivable_amounts[person] for person in receivable_amounts if receivable_amounts[person] < 0}
+    # 債権者
+    creditors = {person: receivable_amounts[person] for person in receivable_amounts if receivable_amounts[person] > 0}
+
+    # 債務者の数nが1の場合、精算グループはこれ以上分割できないので、そのまま返す
+    if len(debtors) == 1:
+        return [[person for person in receivable_amounts]]
+
+    # 債権者の数nが1の場合、精算グループはこれ以上分割できないので、そのまま返す
+    if len(creditors) == 1:
+        return [[person for person in receivable_amounts]]
+
+    queue = []
+    visited = set()
+
+    for i in range(1, 1 << len(debtors)):
+        sub_debtors = {
+            person
+            for k, person
+            in enumerate(debtors)
+            if ((i >> k) & 1) == 1
+        }
+
+        # NOTE: 名前ではなく金額のみで判断することで、組み合わせを減らす
+        sub_debtors_text = ";".join(sorted(str(receivable_amounts[p]) for p in sub_debtors))
+
+        for j in range(1, 1 << len(creditors)):
+            sub_creditors = {
+                person
+                for k, person
+                in enumerate(creditors)
+                if ((j >> k) & 1) == 1
+            }
+            sub_creditors_text = ";".join(sorted(str(receivable_amounts[p]) for p in sub_creditors))
+
+            if f"{sub_debtors_text}:{sub_creditors_text}" in visited:
+                continue
+
+            visited.add(f"{sub_debtors_text}:{sub_creditors_text}")
+
+            if sum(-receivable_amounts[person] for person in sub_debtors) == sum(receivable_amounts[person] for person in sub_creditors):
+                if len(sub_debtors) + len(sub_creditors) == 0 or len(sub_debtors) + len(sub_creditors) == len(receivable_amounts):
+                    continue
+
+                sub_group_left = {person: receivable_amounts[person] for person in receivable_amounts if person not in (sub_debtors | sub_creditors)}
+                sub_group_right = {person: receivable_amounts[person] for person in receivable_amounts if person in (sub_debtors | sub_creditors)}
+                queue.append((sub_group_left, sub_group_right))
+
+    candidates = []
+
+    for sub_group_left, sub_group_right in queue:
+        left_result = __create_settlement_groups_recursively(receivable_amounts=sub_group_left)
+        right_result = __create_settlement_groups_recursively(receivable_amounts=sub_group_right)
+
+        candidates.append(
+            [
+                *left_result,
+                *right_result,
+            ]
+        )
+
+    # 候補の中で最も分割数が多いものを返す
+    if len(candidates) > 0:
+        max_candidate = max(candidates, key=len)
+        __create_settlement_groups_recursively_memo[memo_key] = max_candidate
+        return max_candidate
+
+    result = [[person for person in receivable_amounts]]
+    __create_settlement_groups_recursively_memo[memo_key] = result
+    return result
+
+
+def __create_settlements_greedy(*, receivable_amounts: dict[schemas.Person, Fraction]) -> list[schemas.Settlement]:
     settlements = []
-
-    positive_receivable_amounts = {
-        person: receivable_amounts[person]
-        for person in receivable_amounts
-        if receivable_amounts[person] > 0
-    }
-    negative_receivable_amounts = {
-        person: receivable_amounts[person]
-        for person in receivable_amounts
-        if receivable_amounts[person] < 0
-    }
-
-    if len(positive_receivable_amounts) <= len(negative_receivable_amounts):
-        # negative_receivable_amountsの部分和でpositive_receivable_amountsの各要素を満たせるかどうかを調べる
-        # できる場合、settlementsに追加する
-        for person in positive_receivable_amounts:
-            exchange_amount = positive_receivable_amounts[person]
-
-            len_positive_receivable_amounts = len(negative_receivable_amounts)
-
-            for bit in range(1 << len_positive_receivable_amounts):
-                target_person = [
-                    person
-                    for i, person
-                    in enumerate(negative_receivable_amounts)
-                    if ((bit >> i) & 1) == 1
-                ]
-
-                if sum(-negative_receivable_amounts[person] for person in target_person) == exchange_amount:
-                    for target in target_person:
-                        settlements.append(
-                            schemas.Settlement(
-                                send_by=target,
-                                send_for=person,
-                                amount=Decimal(f"{float(-negative_receivable_amounts[target]):.2f}"),
-                            )
-                        )
-                        receivable_amounts[target] = Fraction(0)
-                        negative_receivable_amounts[target] = Fraction(0)
-
-                    receivable_amounts[person] = Fraction(0)
-    else:
-        # positive_receivable_amountsの部分和でnegative_receivable_amountsの各要素を満たせるかどうかを調べる
-        # できる場合、settlementsに追加する
-        for person in negative_receivable_amounts:
-            exchange_amount = -negative_receivable_amounts[person]
-
-            len_negative_receivable_amounts = len(positive_receivable_amounts)
-
-            for bit in range(1 << len_negative_receivable_amounts):
-                target_person = [
-                    person
-                    for i, person
-                    in enumerate(positive_receivable_amounts)
-                    if ((bit >> i) & 1) == 1
-                ]
-
-                if sum(positive_receivable_amounts[person] for person in target_person) == exchange_amount:
-                    for target in target_person:
-                        settlements.append(
-                            schemas.Settlement(
-                                send_by=person,
-                                send_for=target,
-                                amount=Decimal(f"{float(positive_receivable_amounts[target]):.2f}"),
-                            )
-                        )
-                        receivable_amounts[target] = Fraction(0)
-                        positive_receivable_amounts[target] = Fraction(0)
-
-                    receivable_amounts[person] = Fraction(0)
 
     while True:
         person_with_max_receivable_amount = max(receivable_amounts, key=lambda person: receivable_amounts[person])
         person_with_min_receivable_amount = min(receivable_amounts, key=lambda person: receivable_amounts[person])
 
-        if receivable_amounts[person_with_max_receivable_amount] <= 1:
+        if receivable_amounts[person_with_max_receivable_amount] < Fraction(1):
             break
 
         amount = min(
