@@ -38,6 +38,11 @@ __create_settlement_groups_recursively_memo = dict()
 
 
 def __create_settlement_groups_recursively(*, receivable_amounts: dict[schemas.Person, Fraction]) -> list[list[schemas.Person]]:
+    memo_key = "-".join(sorted(f"{person.name},{receivable_amounts[person]}" for person in receivable_amounts))
+
+    if memo_key in __create_settlement_groups_recursively_memo:
+        return __create_settlement_groups_recursively_memo[memo_key]
+
     if len(receivable_amounts) == 0:
         return []
 
@@ -93,20 +98,8 @@ def __create_settlement_groups_recursively(*, receivable_amounts: dict[schemas.P
     candidates = []
 
     for sub_group_left, sub_group_right in queue:
-        sub_group_left_text = "-".join(sorted(list(k.name for k in sub_group_left)))
-        sub_group_right_text = "-".join(sorted(list(k.name for k in sub_group_right)))
-
-        if sub_group_left_text in __create_settlement_groups_recursively_memo:
-            left_result = __create_settlement_groups_recursively_memo[sub_group_left_text]
-        else:
-            left_result = __create_settlement_groups_recursively(receivable_amounts=sub_group_left)
-            __create_settlement_groups_recursively_memo[sub_group_left_text] = left_result
-
-        if sub_group_right_text in __create_settlement_groups_recursively_memo:
-            right_result = __create_settlement_groups_recursively_memo[sub_group_right_text]
-        else:
-            right_result = __create_settlement_groups_recursively(receivable_amounts=sub_group_right)
-            __create_settlement_groups_recursively_memo[sub_group_right_text] = right_result
+        left_result = __create_settlement_groups_recursively(receivable_amounts=sub_group_left)
+        right_result = __create_settlement_groups_recursively(receivable_amounts=sub_group_right)
 
         candidates.append(
             [
@@ -117,9 +110,13 @@ def __create_settlement_groups_recursively(*, receivable_amounts: dict[schemas.P
 
     # 候補の中で最も分割数が多いものを返す
     if len(candidates) > 0:
-        return max(candidates, key=len)
+        max_candidate = max(candidates, key=len)
+        __create_settlement_groups_recursively_memo[memo_key] = max_candidate
+        return max_candidate
 
-    return [[person for person in receivable_amounts]]
+    result = [[person for person in receivable_amounts]]
+    __create_settlement_groups_recursively_memo[memo_key] = result
+    return result
 
 
 def __create_settlements_greedy(*, receivable_amounts: dict[schemas.Person, Fraction]) -> list[schemas.Settlement]:
