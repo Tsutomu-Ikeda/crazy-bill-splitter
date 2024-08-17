@@ -749,6 +749,33 @@ class SettlementsConstraints(BaseModel):
                     },
                     total_exchange_amount=Decimal("666.66")
                 )
+            ),
+            (
+                "傾斜ありで綺麗に分割できるケース",
+                services.CalculateSettlementRequestBody(
+                    participants=helpers.People.alphabetical_range("A", "C",[3,2,2]).members,
+                    payments=[
+                        schemas.Payment(
+                            paid_by=schemas.Person(name="A",paymentWeight=3),
+                            paid_for=helpers.People.alphabetical_range("A", "C",[3,2,2]).members,
+                            amount=7000
+                        ),
+                        schemas.Payment(
+                            paid_by=schemas.Person(name="C",paymentWeight=2),
+                            paid_for=helpers.People.alphabetical_range("A", "C",[3,2,2]).members,
+                            amount=7000
+                        )
+                    ],
+                ),
+                SettlementsConstraints(
+                    settlements_length=2,
+                    receive_amount={
+                        schemas.Person(name="A",paymentWeight=3): Decimal("1000"),
+                        schemas.Person(name="B",paymentWeight=2): Decimal("-4000"),
+                        schemas.Person(name="C",paymentWeight=2): Decimal("3000"),
+                    },
+                    total_exchange_amount=Decimal("4000")
+                )
             )
         ]
 )

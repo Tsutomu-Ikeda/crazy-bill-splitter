@@ -1,4 +1,5 @@
 import re
+from typing import Optional
 
 from pydantic import BaseModel
 import schemas
@@ -8,7 +9,7 @@ class People(BaseModel):
     members: list[schemas.Person]
 
     @classmethod
-    def alphabetical_range(cls, begin: str, end: str) -> "People":
+    def alphabetical_range(cls, begin: str, end: str,weights: Optional[list[int]] = None) -> "People":
         """
         Create a People object from a range of alphabetical characters.
 
@@ -40,4 +41,11 @@ class People(BaseModel):
         if errors:
             raise ValueError(f"{len(errors)} errors occurred:\n\n" + "\n".join(errors))
 
-        return cls(members=[schemas.Person(name=chr(i)) for i in range(ord(begin), ord(end) + 1)])
+        if weights == None:
+            return cls(members=[schemas.Person(name=chr(i)) for i in range(ord(begin), ord(end) + 1)])
+        else:
+            if any(weights < 0 for weights in weights):
+                raise ValueError("weights must be greater than or equal to 0")
+            if len(weights) != ord(end) - ord(begin) + 1:
+                raise ValueError("weights must have the same length as the range of characters")
+            return cls(members=[schemas.Person(name=chr(i),paymentWeight=weights[i-ord(begin)]) for i in range(ord(begin), ord(end) + 1)])
