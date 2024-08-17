@@ -7,4 +7,4 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Checkout And Build
-        run: docker-compose run --rm test poetry run pytest
+        run: docker compose run --rm test poetry run pytest
