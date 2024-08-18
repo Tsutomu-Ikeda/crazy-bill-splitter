@@ -1,5 +1,12 @@
 version: '3'
 services:
+  db:
+    image: postgres:16
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: postgres
   python-app:
     build:
       context: apps/python
@@ -10,6 +17,19 @@ services:
       interval: 3s
       timeout: 60s
       retries: 20
+  crud-api:
+    build: ./apps/crud-api
+    volumes:
+      - ./apps/crud-api:/usr/src/app
+    command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails s -p 4000 -b '0.0.0.0'"
+    stdin_open: true
+    tty: true
+    ports:
+      - "4000:4000"
+    depends_on:
+      - db
+    environment:
+      RAILS_ENV: development
   test:
     build:
       context: test
@@ -20,4 +40,5 @@ services:
     depends_on:
       python-app:
         condition: service_healthy
-
+volumes:
+  postgres:
