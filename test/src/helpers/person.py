@@ -9,7 +9,7 @@ class People(BaseModel):
     members: list[schemas.Person]
 
     @classmethod
-    def generate(cls, *, count: int, names: Optional[Iterable[str]] = None paymentWeights: Optional[Iterable[int]] = None) -> "People":
+    def alphabetical_range(cls, begin: str, end: str,weights: Optional[list[int]] = None) -> "People":
         """
         Create a People object from a range of alphabetical characters.
 
