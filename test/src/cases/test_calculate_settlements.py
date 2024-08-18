@@ -753,16 +753,16 @@ class SettlementsConstraints(BaseModel):
             (
                 "傾斜ありで綺麗に分割できるケース",
                 services.CalculateSettlementRequestBody(
-                    participants=helpers.People.alphabetical_range("A", "C",[3,2,2]).members,
+                    participants=helpers.People.generate(3,weights=[3,2,2]).members,
                     payments=[
                         schemas.Payment(
                             paid_by=schemas.Person(name="A",paymentWeight=3),
-                            paid_for=helpers.People.alphabetical_range("A", "C",[3,2,2]).members,
+                            paid_for=helpers.People.generate(3,weights=[3,2,2]).members,
                             amount=7000
                         ),
                         schemas.Payment(
                             paid_by=schemas.Person(name="C",paymentWeight=2),
-                            paid_for=helpers.People.alphabetical_range("A", "C",[3,2,2]).members,
+                            paid_for=helpers.People.generate(3,weights=[3,2,2]).members,
                             amount=7000
                         )
                     ],

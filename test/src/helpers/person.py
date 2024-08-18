@@ -1,5 +1,5 @@
 import re
-from typing import Optional
+from typing import Iterable, Optional
 
 from pydantic import BaseModel
 import schemas
@@ -9,7 +9,7 @@ class People(BaseModel):
     members: list[schemas.Person]
 
     @classmethod
-    def alphabetical_range(cls, begin: str, end: str,weights: Optional[list[int]] = None) -> "People":
+    def alphabetical_range(cls, begin: str, end: str) -> "People":
         """
         Create a People object from a range of alphabetical characters.
 
@@ -41,11 +41,36 @@ class People(BaseModel):
         if errors:
             raise ValueError(f"{len(errors)} errors occurred:\n\n" + "\n".join(errors))
 
-        if weights == None:
-            return cls(members=[schemas.Person(name=chr(i)) for i in range(ord(begin), ord(end) + 1)])
+        return cls(members=[schemas.Person(name=chr(i)) for i in range(ord(begin), ord(end) + 1)])
+
+    @classmethod
+    def generate(cls, count: int, names: Optional[Iterable[int]] = None, weights: Optional[Iterable[int]] = None) -> "People":
+        """
+        Create a People object with a specified number of members.
+
+        Args:
+            count (int): The number of members to generate.
+
+        Returns:
+            People: A People object with the specified number of members.
+
+        Example:
+            >>> People.generate(3)
+            People(members=[Person(name='A'), Person(name='B'), Person(name='C')])
+        """
+
+        if count < 0:
+            raise ValueError("count must be greater than or equal to 0")
+        if names != None and len(names) != count:
+            raise ValueError("count must be equal to the length of names")
+        if weights != None and len(weights) != count:
+            raise ValueError("count must be equal to the length of weights")
+
+        if names != None and weights != None:
+            return cls(members=[schemas.Person(name=name,paymentWeight=weight) for name, weight in zip(names, weights) ])
+        elif names != None:
+            return cls(members=[schemas.Person(name=name) for name in names])
+        elif weights != None:
+            return cls(members=[schemas.Person(name=chr(i + ord('A')),paymentWeight=weights[i]) for i in range(count)])
         else:
-            if any(weights < 0 for weights in weights):
-                raise ValueError("weights must be greater than or equal to 0")
-            if len(weights) != ord(end) - ord(begin) + 1:
-                raise ValueError("weights must have the same length as the range of characters")
-            return cls(members=[schemas.Person(name=chr(i),paymentWeight=weights[i-ord(begin)]) for i in range(ord(begin), ord(end) + 1)])
+            return cls(members=[schemas.Person(name=chr(i + ord('A')) ) for i in range(count)])
