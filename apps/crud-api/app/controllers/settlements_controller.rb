@@ -2,17 +2,19 @@ class SettlementsController < ApplicationController
   before_action :set_settlement_session, only: %i[ show update destroy create_payment ]
 
   def show
-    render json: Serializers::Settlement::Detail.new(@settlement_session).serialize
+    render json: Presentation::Serializers::Settlement::Detail.new(@settlement_session).execute
   end
 
   def create
-    settlement_session = Usecases::Settlement::Create.new.execute(settlement_session_params)
+    de_serialized_params = Presentation::DeSerializers::Settlement::Params.new(params).execute
+    settlement_session = Usecases::Settlement::Create.new.execute(de_serialized_params)
 
     render json: settlement_session
   end
 
   def update
-    Usecases::Settlement::Update.new(@settlement_session).execute(settlement_session_params)
+    de_serialized_params = Presentation::DeSerializers::Settlement::Params.new(params).execute
+    Usecases::Settlement::Update.new(@settlement_session).execute(de_serialized_params)
 
     render json: @settlement_session
   rescue ActiveRecord::RecordInvalid => e
@@ -28,7 +30,8 @@ class SettlementsController < ApplicationController
   end
 
   def create_payment
-    payment = Usecases::Settlement::CreatePayment.new(@settlement_session).execute(payment_params)
+    de_serialized_params = Presentation::DeSerializers::Settlement::PaymentParams.new(params).execute
+    payment = Usecases::Settlement::CreatePayment.new(@settlement_session).execute(de_serialized_params)
 
     render json: payment
   end
@@ -45,29 +48,5 @@ class SettlementsController < ApplicationController
   private
     def set_settlement_session
       @settlement_session = SettlementSession.find(params[:id])
-    end
-
-    def settlement_session_params
-      params.require(:settlement).permit(
-        :title,
-        :visibility_scope,
-      ).merge(params.permit(participants: %i[ id name role ]))
-    end
-
-    def user_params
-      params.require(:user).permit(:name)
-    end
-
-    def payment_params
-      params.permit(
-        :amount,
-        :paid_by_id,
-        :title,
-        :description,
-      ).merge(params.permit(participants: %i[ id weight ]))
-    end
-
-    def members_params
-      params.require(:members).permit(:id, :name, :role)
     end
 end
