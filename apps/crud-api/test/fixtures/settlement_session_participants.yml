@@ -1,0 +1,15 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  settlement_session: one
+  user: one
+  joined_at: 2024-08-17 14:38:20
+  role: 1
+  settlement_status: 1
+
+two:
+  settlement_session: two
+  user: two
+  joined_at: 2024-08-17 14:38:20
+  role: 1
+  settlement_status: 1

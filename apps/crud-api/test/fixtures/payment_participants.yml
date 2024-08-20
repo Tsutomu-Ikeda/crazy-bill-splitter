@@ -1,0 +1,11 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  payment: one
+  user: one
+  weight: 1
+
+two:
+  payment: two
+  user: two
+  weight: 1
