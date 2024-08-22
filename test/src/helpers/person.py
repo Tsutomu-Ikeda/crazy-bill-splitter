@@ -1,7 +1,8 @@
 from typing import Iterable, Optional
-
 from pydantic import BaseModel
 import schemas
+from .text import Text
+from itertools import repeat
 
 
 class People(BaseModel):
@@ -22,13 +23,27 @@ class People(BaseModel):
             >>> People.generate(names=["Alice", "Bob", "Charlie"], weights=[1, 2, 3])
             People(members=[Person(name='Alice', paymentWeight=1), Person(name='Bob', paymentWeight=2), Person(name='Charlie', paymentWeight=3)])
         """
+        def determine_members_count() -> int:  
+            if names != None:  
+                return len(names)  
+            elif paymentWeights != None:  
+                return len(paymentWeights)  
 
-        if names == None and paymentWeights == None:
-            raise ValueError("names and weights cannot both be None")
+            raise ValueError("names and weights cannot both be None")  
 
-        if names != None and paymentWeights != None:
-            return cls(members=[schemas.Person(name=name,paymentWeight=weights) for name, weights in zip(names, paymentWeights) ])
-        elif names != None:
-            return cls(members=[schemas.Person(name=name) for name in names])
-        elif paymentWeights != None:
-            return cls(members=[schemas.Person(name=chr(i + ord('A')),paymentWeight=paymentWeights[i]) for i in range(len(paymentWeights))])
+        members_count = determine_members_count()
+
+        return cls(
+        members=[
+            schemas.Person(
+            name=name,
+            paymentWeight=paymentWeight
+            )
+            for name, paymentWeight
+            in zip(
+            names or Text.alphabetical_range("A", chr(members_count - 1 + ord('A'))),
+            paymentWeights or repeat(1)
+            )
+        ]
+        )
+
