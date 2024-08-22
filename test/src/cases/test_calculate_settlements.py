@@ -45,16 +45,16 @@ class SettlementsConstraints(BaseModel):
             (
                 "A,Bがそれぞれ全員分の5,000円を支払ったケース",
                 services.CalculateSettlementRequestBody(
-                    participants=helpers.People.alphabetical_range("A", "E").members,
+                    participants=helpers.People.generate(names=helpers.Text.alphabetical_range("A", "E")).members,
                     payments=[
                         schemas.Payment(
                             paid_by=schemas.Person(name="A"),
-                            paid_for=helpers.People.alphabetical_range("A", "E").members,
+                            paid_for=helpers.People.generate(names=helpers.Text.alphabetical_range("A", "E")).members,
                             amount=5000,
                         ),
                         schemas.Payment(
                             paid_by=schemas.Person(name="B"),
-                            paid_for=helpers.People.alphabetical_range("A", "E").members,
+                            paid_for=helpers.People.generate(names=helpers.Text.alphabetical_range("A", "E")).members,
                             amount=5000,
                         ),
                     ]
@@ -74,21 +74,21 @@ class SettlementsConstraints(BaseModel):
             (
                 "A,B,Cがそれぞれ全員分の5,000円を支払ったケース",
                 services.CalculateSettlementRequestBody(
-                    participants=helpers.People.alphabetical_range("A", "E").members,
+                    participants=helpers.People.generate(names=helpers.Text.alphabetical_range("A", "E")).members,
                     payments=[
                         schemas.Payment(
                             paid_by=schemas.Person(name="A"),
-                            paid_for=helpers.People.alphabetical_range("A", "E").members,
+                            paid_for=helpers.People.generate(names=helpers.Text.alphabetical_range("A", "E")).members,
                             amount=5000
                         ),
                         schemas.Payment(
                             paid_by=schemas.Person(name="B"),
-                            paid_for=helpers.People.alphabetical_range("A", "E").members,
+                            paid_for=helpers.People.generate(names=helpers.Text.alphabetical_range("A", "E")).members,
                             amount=5000
                         ),
                         schemas.Payment(
                             paid_by=schemas.Person(name="C"),
-                            paid_for=helpers.People.alphabetical_range("A", "E").members,
+                            paid_for=helpers.People.generate(names=helpers.Text.alphabetical_range("A", "E")).members,
                             amount=5000
                         ),
                     ]
@@ -108,7 +108,7 @@ class SettlementsConstraints(BaseModel):
             (
                 "循環して5,000円ずつ支払ったケース",
                 services.CalculateSettlementRequestBody(
-                    participants=helpers.People.alphabetical_range("A", "C").members,
+                    participants=helpers.People.generate(names=helpers.Text.alphabetical_range("A", "C")).members,
                     payments=[
                         schemas.Payment(
                             paid_by=schemas.Person(name="A"),
@@ -146,7 +146,7 @@ class SettlementsConstraints(BaseModel):
             (
                 "B,CがA,D,Eに精算を行う必要があるケース",
                 services.CalculateSettlementRequestBody(
-                    participants=helpers.People.alphabetical_range("A", "E").members,
+                    participants=helpers.People.generate(names=helpers.Text.alphabetical_range("A", "E")).members,
                     payments=[
                         schemas.Payment(
                             paid_by=schemas.Person(name="D"),
@@ -189,31 +189,31 @@ class SettlementsConstraints(BaseModel):
             (
                 "連結でないグラフが発生しうるケース",
                 services.CalculateSettlementRequestBody(
-                    participants=helpers.People.alphabetical_range("A", "E").members,
+                    participants=helpers.People.generate(names=helpers.Text.alphabetical_range("A", "E")).members,
                     payments=[
                         schemas.Payment(
                             paid_by=schemas.Person(name="A"),
-                            paid_for=helpers.People.alphabetical_range("A", "E").members,
+                            paid_for=helpers.People.generate(names=helpers.Text.alphabetical_range("A", "E")).members,
                             amount=13000
                         ),
                         schemas.Payment(
                             paid_by=schemas.Person(name="B"),
-                            paid_for=helpers.People.alphabetical_range("A", "E").members,
+                            paid_for=helpers.People.generate(names=helpers.Text.alphabetical_range("A", "E")).members,
                             amount=12000
                         ),
                         schemas.Payment(
                             paid_by=schemas.Person(name="C"),
-                            paid_for=helpers.People.alphabetical_range("A", "E").members,
+                            paid_for=helpers.People.generate(names=helpers.Text.alphabetical_range("A", "E")).members,
                             amount=11500
                         ),
                         schemas.Payment(
                             paid_by=schemas.Person(name="D"),
-                            paid_for=helpers.People.alphabetical_range("A", "E").members,
+                            paid_for=helpers.People.generate(names=helpers.Text.alphabetical_range("A", "E")).members,
                             amount=6000
                         ),
                         schemas.Payment(
                             paid_by=schemas.Person(name="E"),
-                            paid_for=helpers.People.alphabetical_range("A", "E").members,
+                            paid_for=helpers.People.generate(names=helpers.Text.alphabetical_range("A", "E")).members,
                             amount=2500
                         ),
                     ],
@@ -233,31 +233,31 @@ class SettlementsConstraints(BaseModel):
             (
                 "連結でないグラフが発生しうるケース 最大支払い者が最大受け取り者に支払うというロジックが使えないケース",
                 services.CalculateSettlementRequestBody(
-                    participants=helpers.People.alphabetical_range("A", "E").members,
+                    participants=helpers.People.generate(names=helpers.Text.alphabetical_range("A", "E")).members,
                     payments=[
                         schemas.Payment(
                             paid_by=schemas.Person(name="A"),
-                            paid_for=helpers.People.alphabetical_range("A", "E").members,
+                            paid_for=helpers.People.generate(names=helpers.Text.alphabetical_range("A", "E")).members,
                             amount=9000
                         ),
                         schemas.Payment(
                             paid_by=schemas.Person(name="B"),
-                            paid_for=helpers.People.alphabetical_range("A", "E").members,
+                            paid_for=helpers.People.generate(names=helpers.Text.alphabetical_range("A", "E")).members,
                             amount=8000
                         ),
                         schemas.Payment(
                             paid_by=schemas.Person(name="C"),
-                            paid_for=helpers.People.alphabetical_range("A", "E").members,
+                            paid_for=helpers.People.generate(names=helpers.Text.alphabetical_range("A", "E")).members,
                             amount=3500
                         ),
                         schemas.Payment(
                             paid_by=schemas.Person(name="D"),
-                            paid_for=helpers.People.alphabetical_range("A", "E").members,
+                            paid_for=helpers.People.generate(names=helpers.Text.alphabetical_range("A", "E")).members,
                             amount=2500
                         ),
                         schemas.Payment(
                             paid_by=schemas.Person(name="E"),
-                            paid_for=helpers.People.alphabetical_range("A", "E").members,
+                            paid_for=helpers.People.generate(names=helpers.Text.alphabetical_range("A", "E")).members,
                             amount=2000
                         ),
                     ],
@@ -277,36 +277,36 @@ class SettlementsConstraints(BaseModel):
             (
                 "連結でないグラフが発生しうるケース 最大支払い者が最小可能受け取り者に支払うというロジックが使えないケース",
                 services.CalculateSettlementRequestBody(
-                    participants=helpers.People.alphabetical_range("A", "G").members,
+                    participants=helpers.People.generate(names=helpers.Text.alphabetical_range("A", "G")).members,
                     payments=[
                         schemas.Payment(
                             paid_by=schemas.Person(name="A"),
-                            paid_for=helpers.People.alphabetical_range("A", "G").members,
+                            paid_for=helpers.People.generate(names=helpers.Text.alphabetical_range("A", "G")).members,
                             amount=8500
                         ),
                         schemas.Payment(
                             paid_by=schemas.Person(name="B"),
-                            paid_for=helpers.People.alphabetical_range("A", "G").members,
+                            paid_for=helpers.People.generate(names=helpers.Text.alphabetical_range("A", "G")).members,
                             amount=9000
                         ),
                         schemas.Payment(
                             paid_by=schemas.Person(name="C"),
-                            paid_for=helpers.People.alphabetical_range("A", "G").members,
+                            paid_for=helpers.People.generate(names=helpers.Text.alphabetical_range("A", "G")).members,
                             amount=1000
                         ),
                         schemas.Payment(
                             paid_by=schemas.Person(name="D"),
-                            paid_for=helpers.People.alphabetical_range("A", "G").members,
+                            paid_for=helpers.People.generate(names=helpers.Text.alphabetical_range("A", "G")).members,
                             amount=1000
                         ),
                         schemas.Payment(
                             paid_by=schemas.Person(name="E"),
-                            paid_for=helpers.People.alphabetical_range("A", "G").members,
+                            paid_for=helpers.People.generate(names=helpers.Text.alphabetical_range("A", "G")).members,
                             amount=1000
                         ),
                         schemas.Payment(
                             paid_by=schemas.Person(name="F"),
-                            paid_for=helpers.People.alphabetical_range("A", "G").members,
+                            paid_for=helpers.People.generate(names=helpers.Text.alphabetical_range("A", "G")).members,
                             amount=500
                         ),
                     ],
@@ -328,21 +328,21 @@ class SettlementsConstraints(BaseModel):
             (
                 "部分和で最適化できるケース、複数の部分和が存在するケース",
                 services.CalculateSettlementRequestBody(
-                    participants=helpers.People.alphabetical_range("A", "G").members,
+                    participants=helpers.People.generate(names=helpers.Text.alphabetical_range("A", "G")).members,
                     payments=[
                         schemas.Payment(
                             paid_by=schemas.Person(name="A"),
-                            paid_for=helpers.People.alphabetical_range("A", "G").members,
+                            paid_for=helpers.People.generate(names=helpers.Text.alphabetical_range("A", "G")).members,
                             amount=1000
                         ),
                         schemas.Payment(
                             paid_by=schemas.Person(name="C"),
-                            paid_for=helpers.People.alphabetical_range("A", "G").members,
+                            paid_for=helpers.People.generate(names=helpers.Text.alphabetical_range("A", "G")).members,
                             amount=7000
                         ),
                         schemas.Payment(
                             paid_by=schemas.Person(name="D"),
-                            paid_for=helpers.People.alphabetical_range("A", "G").members,
+                            paid_for=helpers.People.generate(names=helpers.Text.alphabetical_range("A", "G")).members,
                             amount=6000
                         ),
                     ],
@@ -364,51 +364,51 @@ class SettlementsConstraints(BaseModel):
             (
                 "3の精算グループができるケース",
                 services.CalculateSettlementRequestBody(
-                    participants=helpers.People.alphabetical_range("A", "J").members,
+                    participants=helpers.People.generate(names=helpers.Text.alphabetical_range("A", "J")).members,
                     payments=[
                         schemas.Payment(
                             paid_by=schemas.Person(name="A"),
-                            paid_for=helpers.People.alphabetical_range("A", "J").members,
+                            paid_for=helpers.People.generate(names=helpers.Text.alphabetical_range("A", "J")).members,
                             amount=2000
                         ),
                         schemas.Payment(
                             paid_by=schemas.Person(name="B"),
-                            paid_for=helpers.People.alphabetical_range("A", "J").members,
+                            paid_for=helpers.People.generate(names=helpers.Text.alphabetical_range("A", "J")).members,
                             amount=1000
                         ),
                         schemas.Payment(
                             paid_by=schemas.Person(name="C"),
-                            paid_for=helpers.People.alphabetical_range("A", "J").members,
+                            paid_for=helpers.People.generate(names=helpers.Text.alphabetical_range("A", "J")).members,
                             amount=7500
                         ),
                         schemas.Payment(
                             paid_by=schemas.Person(name="D"),
-                            paid_for=helpers.People.alphabetical_range("A", "J").members,
+                            paid_for=helpers.People.generate(names=helpers.Text.alphabetical_range("A", "J")).members,
                             amount=7500
                         ),
                         schemas.Payment(
                             paid_by=schemas.Person(name="E"),
-                            paid_for=helpers.People.alphabetical_range("A", "J").members,
+                            paid_for=helpers.People.generate(names=helpers.Text.alphabetical_range("A", "J")).members,
                             amount=1750
                         ),
                         schemas.Payment(
                             paid_by=schemas.Person(name="F"),
-                            paid_for=helpers.People.alphabetical_range("A", "J").members,
+                            paid_for=helpers.People.generate(names=helpers.Text.alphabetical_range("A", "J")).members,
                             amount=11750
                         ),
                         schemas.Payment(
                             paid_by=schemas.Person(name="H"),
-                            paid_for=helpers.People.alphabetical_range("A", "J").members,
+                            paid_for=helpers.People.generate(names=helpers.Text.alphabetical_range("A", "J")).members,
                             amount=2950
                         ),
                         schemas.Payment(
                             paid_by=schemas.Person(name="I"),
-                            paid_for=helpers.People.alphabetical_range("A", "J").members,
+                            paid_for=helpers.People.generate(names=helpers.Text.alphabetical_range("A", "J")).members,
                             amount=8050
                         ),
                         schemas.Payment(
                             paid_by=schemas.Person(name="J"),
-                            paid_for=helpers.People.alphabetical_range("A", "J").members,
+                            paid_for=helpers.People.generate(names=helpers.Text.alphabetical_range("A", "J")).members,
                             amount=2500
                         ),
                     ],
@@ -433,101 +433,101 @@ class SettlementsConstraints(BaseModel):
             (
                 "20名で割り勘をしたケース",
                 services.CalculateSettlementRequestBody(
-                    participants=helpers.People.alphabetical_range("A", "T").members,
+                    participants=helpers.People.generate(names=helpers.Text.alphabetical_range("A", "T")).members,
                     payments=[
                         schemas.Payment(
                             paid_by=schemas.Person(name="A"),
-                            paid_for=helpers.People.alphabetical_range("A", "T").members,
+                            paid_for=helpers.People.generate(names=helpers.Text.alphabetical_range("A", "T")).members,
                             amount=206
                         ),
                         schemas.Payment(
                             paid_by=schemas.Person(name="B"),
-                            paid_for=helpers.People.alphabetical_range("A", "T").members,
+                            paid_for=helpers.People.generate(names=helpers.Text.alphabetical_range("A", "T")).members,
                             amount=206
                         ),
                         schemas.Payment(
                             paid_by=schemas.Person(name="C"),
-                            paid_for=helpers.People.alphabetical_range("A", "T").members,
+                            paid_for=helpers.People.generate(names=helpers.Text.alphabetical_range("A", "T")).members,
                             amount=206
                         ),
                         schemas.Payment(
                             paid_by=schemas.Person(name="D"),
-                            paid_for=helpers.People.alphabetical_range("A", "T").members,
+                            paid_for=helpers.People.generate(names=helpers.Text.alphabetical_range("A", "T")).members,
                             amount=606
                         ),
                         schemas.Payment(
                             paid_by=schemas.Person(name="E"),
-                            paid_for=helpers.People.alphabetical_range("A", "T").members,
+                            paid_for=helpers.People.generate(names=helpers.Text.alphabetical_range("A", "T")).members,
                             amount=407
                         ),
                         schemas.Payment(
                             paid_by=schemas.Person(name="F"),
-                            paid_for=helpers.People.alphabetical_range("A", "T").members,
+                            paid_for=helpers.People.generate(names=helpers.Text.alphabetical_range("A", "T")).members,
                             amount=407
                         ),
                         schemas.Payment(
                             paid_by=schemas.Person(name="G"),
-                            paid_for=helpers.People.alphabetical_range("A", "T").members,
+                            paid_for=helpers.People.generate(names=helpers.Text.alphabetical_range("A", "T")).members,
                             amount=407
                         ),
                         schemas.Payment(
                             paid_by=schemas.Person(name="H"),
-                            paid_for=helpers.People.alphabetical_range("A", "T").members,
+                            paid_for=helpers.People.generate(names=helpers.Text.alphabetical_range("A", "T")).members,
                             amount=3
                         ),
                         schemas.Payment(
                             paid_by=schemas.Person(name="I"),
-                            paid_for=helpers.People.alphabetical_range("A", "T").members,
+                            paid_for=helpers.People.generate(names=helpers.Text.alphabetical_range("A", "T")).members,
                             amount=201
                         ),
                         schemas.Payment(
                             paid_by=schemas.Person(name="J"),
-                            paid_for=helpers.People.alphabetical_range("A", "T").members,
+                            paid_for=helpers.People.generate(names=helpers.Text.alphabetical_range("A", "T")).members,
                             amount=201
                         ),
                         schemas.Payment(
                             paid_by=schemas.Person(name="K"),
-                            paid_for=helpers.People.alphabetical_range("A", "T").members,
+                            paid_for=helpers.People.generate(names=helpers.Text.alphabetical_range("A", "T")).members,
                             amount=201
                         ),
                         schemas.Payment(
                             paid_by=schemas.Person(name="L"),
-                            paid_for=helpers.People.alphabetical_range("A", "T").members,
+                            paid_for=helpers.People.generate(names=helpers.Text.alphabetical_range("A", "T")).members,
                             amount=621
                         ),
                         schemas.Payment(
                             paid_by=schemas.Person(name="M"),
-                            paid_for=helpers.People.alphabetical_range("A", "T").members,
+                            paid_for=helpers.People.generate(names=helpers.Text.alphabetical_range("A", "T")).members,
                             amount=408
                         ),
                         schemas.Payment(
                             paid_by=schemas.Person(name="N"),
-                            paid_for=helpers.People.alphabetical_range("A", "T").members,
+                            paid_for=helpers.People.generate(names=helpers.Text.alphabetical_range("A", "T")).members,
                             amount=408
                         ),
                         schemas.Payment(
                             paid_by=schemas.Person(name="O"),
-                            paid_for=helpers.People.alphabetical_range("A", "T").members,
+                            paid_for=helpers.People.generate(names=helpers.Text.alphabetical_range("A", "T")).members,
                             amount=408
                         ),
                         schemas.Payment(
                             paid_by=schemas.Person(name="Q"),
-                            paid_for=helpers.People.alphabetical_range("A", "T").members,
+                            paid_for=helpers.People.generate(names=helpers.Text.alphabetical_range("A", "T")).members,
                             amount=509
                         ),
                         schemas.Payment(
                             paid_by=schemas.Person(name="R"),
-                            paid_for=helpers.People.alphabetical_range("A", "T").members,
+                            paid_for=helpers.People.generate(names=helpers.Text.alphabetical_range("A", "T")).members,
                             amount=434
                         ),
                         schemas.Payment(
                             paid_by=schemas.Person(name="S"),
-                            paid_for=helpers.People.alphabetical_range("A", "T").members,
+                            paid_for=helpers.People.generate(names=helpers.Text.alphabetical_range("A", "T")).members,
                             amount=101
                         ),
                         schemas.Payment(
                             paid_by=schemas.Person(name="T"),
-                            paid_for=helpers.People.alphabetical_range("A", "T").members,
+                            paid_for=helpers.People.generate(names=helpers.Text.alphabetical_range("A", "T")).members,
                             amount=180
                         ),
                     ],
@@ -562,61 +562,61 @@ class SettlementsConstraints(BaseModel):
             (
                 "単一リーダーのグループに貪欲的に分割しても最適解にたどり着けないケース",
                 services.CalculateSettlementRequestBody(
-                    participants=helpers.People.alphabetical_range("A", "L").members,
+                    participants=helpers.People.generate(names=helpers.Text.alphabetical_range("A", "L")).members,
                     payments=[
                         schemas.Payment(
                             paid_by=schemas.Person(name="A"),
-                            paid_for=helpers.People.alphabetical_range("A", "L").members,
+                            paid_for=helpers.People.generate(names=helpers.Text.alphabetical_range("A", "L")).members,
                             amount=664
                         ),
                         schemas.Payment(
                             paid_by=schemas.Person(name="B"),
-                            paid_for=helpers.People.alphabetical_range("A", "L").members,
+                            paid_for=helpers.People.generate(names=helpers.Text.alphabetical_range("A", "L")).members,
                             amount=257
                         ),
                         schemas.Payment(
                             paid_by=schemas.Person(name="C"),
-                            paid_for=helpers.People.alphabetical_range("A", "L").members,
+                            paid_for=helpers.People.generate(names=helpers.Text.alphabetical_range("A", "L")).members,
                             amount=256
                         ),
                         schemas.Payment(
                             paid_by=schemas.Person(name="D"),
-                            paid_for=helpers.People.alphabetical_range("A", "L").members,
+                            paid_for=helpers.People.generate(names=helpers.Text.alphabetical_range("A", "L")).members,
                             amount=255
                         ),
                         schemas.Payment(
                             paid_by=schemas.Person(name="E"),
-                            paid_for=helpers.People.alphabetical_range("A", "L").members,
+                            paid_for=helpers.People.generate(names=helpers.Text.alphabetical_range("A", "L")).members,
                             amount=408
                         ),
                         schemas.Payment(
                             paid_by=schemas.Person(name="F"),
-                            paid_for=helpers.People.alphabetical_range("A", "L").members,
+                            paid_for=helpers.People.generate(names=helpers.Text.alphabetical_range("A", "L")).members,
                             amount=409
                         ),
                         schemas.Payment(
                             paid_by=schemas.Person(name="G"),
-                            paid_for=helpers.People.alphabetical_range("A", "L").members,
+                            paid_for=helpers.People.generate(names=helpers.Text.alphabetical_range("A", "L")).members,
                             amount=407
                         ),
                         schemas.Payment(
                             paid_by=schemas.Person(name="H"),
-                            paid_for=helpers.People.alphabetical_range("A", "L").members,
+                            paid_for=helpers.People.generate(names=helpers.Text.alphabetical_range("A", "L")).members,
                             amount=411
                         ),
                         schemas.Payment(
                             paid_by=schemas.Person(name="I"),
-                            paid_for=helpers.People.alphabetical_range("A", "L").members,
+                            paid_for=helpers.People.generate(names=helpers.Text.alphabetical_range("A", "L")).members,
                             amount=406
                         ),
                         schemas.Payment(
                             paid_by=schemas.Person(name="J"),
-                            paid_for=helpers.People.alphabetical_range("A", "L").members,
+                            paid_for=helpers.People.generate(names=helpers.Text.alphabetical_range("A", "L")).members,
                             amount=413
                         ),
                         schemas.Payment(
                             paid_by=schemas.Person(name="K"),
-                            paid_for=helpers.People.alphabetical_range("A", "L").members,
+                            paid_for=helpers.People.generate(names=helpers.Text.alphabetical_range("A", "L")).members,
                             amount=410
                         ),
                     ],
@@ -643,24 +643,24 @@ class SettlementsConstraints(BaseModel):
             (
                 "16名で1対1の送金で精算できるケース",
                 services.CalculateSettlementRequestBody(
-                    participants=helpers.People.alphabetical_range("A", "P").members,
+                    participants=helpers.People.generate(names=helpers.Text.alphabetical_range("A", "P")).members,
                     payments=[
                         schemas.Payment(
                             paid_by=paid_by,
-                            paid_for=helpers.People.alphabetical_range("A", "P").members,
+                            paid_for=helpers.People.generate(names=helpers.Text.alphabetical_range("A", "P")).members,
                             amount=600
                         )
-                        for paid_by in helpers.People.alphabetical_range("A", "H").members
+                        for paid_by in helpers.People.generate(names=helpers.Text.alphabetical_range("A", "H")).members
                     ],
                 ),
                 SettlementsConstraints(
                     settlements_length=8,
                     receive_amount={
                         creditor: Decimal(300)
-                        for creditor in helpers.People.alphabetical_range("A", "H").members
+                        for creditor in helpers.People.generate(names=helpers.Text.alphabetical_range("A", "H")).members
                     } | {
                         debtor: Decimal(-300)
-                        for debtor in helpers.People.alphabetical_range("I", "P").members
+                        for debtor in helpers.People.generate(names=helpers.Text.alphabetical_range("I", "P")).members
                     },
                     total_exchange_amount=Decimal(2400)
                 )
@@ -668,46 +668,46 @@ class SettlementsConstraints(BaseModel):
             (
                 "min(m, n)が2のグループが2つできるケース",
                 services.CalculateSettlementRequestBody(
-                    participants=helpers.People.alphabetical_range("A", "I").members,
+                    participants=helpers.People.generate(names=helpers.Text.alphabetical_range("A", "I")).members,
                     payments=[
                         schemas.Payment(
                             paid_by=schemas.Person(name="A"),
-                            paid_for=helpers.People.alphabetical_range("A", "I").members,
+                            paid_for=helpers.People.generate(names=helpers.Text.alphabetical_range("A", "I")).members,
                             amount=6000
                         ),
                         schemas.Payment(
                             paid_by=schemas.Person(name="B"),
-                            paid_for=helpers.People.alphabetical_range("A", "I").members,
+                            paid_for=helpers.People.generate(names=helpers.Text.alphabetical_range("A", "I")).members,
                             amount=7000
                         ),
                         schemas.Payment(
                             paid_by=schemas.Person(name="D"),
-                            paid_for=helpers.People.alphabetical_range("A", "I").members,
+                            paid_for=helpers.People.generate(names=helpers.Text.alphabetical_range("A", "I")).members,
                             amount=3500
                         ),
                         schemas.Payment(
                             paid_by=schemas.Person(name="E"),
-                            paid_for=helpers.People.alphabetical_range("A", "I").members,
+                            paid_for=helpers.People.generate(names=helpers.Text.alphabetical_range("A", "I")).members,
                             amount=3500
                         ),
                         schemas.Payment(
                             paid_by=schemas.Person(name="F"),
-                            paid_for=helpers.People.alphabetical_range("A", "I").members,
+                            paid_for=helpers.People.generate(names=helpers.Text.alphabetical_range("A", "I")).members,
                             amount=9100
                         ),
                         schemas.Payment(
                             paid_by=schemas.Person(name="G"),
-                            paid_for=helpers.People.alphabetical_range("A", "I").members,
+                            paid_for=helpers.People.generate(names=helpers.Text.alphabetical_range("A", "I")).members,
                             amount=6200
                         ),
                         schemas.Payment(
                             paid_by=schemas.Person(name="H"),
-                            paid_for=helpers.People.alphabetical_range("A", "I").members,
+                            paid_for=helpers.People.generate(names=helpers.Text.alphabetical_range("A", "I")).members,
                             amount=300
                         ),
                         schemas.Payment(
                             paid_by=schemas.Person(name="I"),
-                            paid_for=helpers.People.alphabetical_range("A", "I").members,
+                            paid_for=helpers.People.generate(names=helpers.Text.alphabetical_range("A", "I")).members,
                             amount=400
                         ),
                     ],
@@ -731,11 +731,11 @@ class SettlementsConstraints(BaseModel):
             (
                 "3人で割り勘をして、割り切れないケース",
                 services.CalculateSettlementRequestBody(
-                    participants=helpers.People.alphabetical_range("A", "C").members,
+                    participants=helpers.People.generate(names=helpers.Text.alphabetical_range("A", "C")).members,
                     payments=[
                         schemas.Payment(
                             paid_by=schemas.Person(name="A"),
-                            paid_for=helpers.People.alphabetical_range("A", "C").members,
+                            paid_for=helpers.People.generate(names=helpers.Text.alphabetical_range("A", "C")).members,
                             amount=1000
                         ),
                     ],
@@ -748,6 +748,33 @@ class SettlementsConstraints(BaseModel):
                         schemas.Person(name="C"): Decimal("-333.33"),
                     },
                     total_exchange_amount=Decimal("666.66")
+                )
+            ),
+            (
+                "傾斜ありで綺麗に分割できるケース",
+                services.CalculateSettlementRequestBody(
+                    participants=helpers.People.generate(paymentWeights=[3,2,2]).members,
+                    payments=[
+                        schemas.Payment(
+                            paid_by=schemas.Person(name="A",paymentWeight=3),
+                            paid_for=helpers.People.generate(paymentWeights=[3,2,2]).members,
+                            amount=7000
+                        ),
+                        schemas.Payment(
+                            paid_by=schemas.Person(name="C",paymentWeight=2),
+                            paid_for=helpers.People.generate(paymentWeights=[3,2,2]).members,
+                            amount=7000
+                        )
+                    ],
+                ),
+                SettlementsConstraints(
+                    settlements_length=2,
+                    receive_amount={
+                        schemas.Person(name="A",paymentWeight=3): Decimal("1000"),
+                        schemas.Person(name="B",paymentWeight=2): Decimal("-4000"),
+                        schemas.Person(name="C",paymentWeight=2): Decimal("3000"),
+                    },
+                    total_exchange_amount=Decimal("4000")
                 )
             )
         ]

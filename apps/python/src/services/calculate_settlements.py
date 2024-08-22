@@ -23,13 +23,14 @@ def __calculate_receivable_amounts(*, payments: list[schemas.Payment], participa
     receivable_amounts = {person: Fraction(0, 1) for person in participants}
 
     for payment in payments:
-        receivable_amounts[payment.paid_by] += Fraction(payment.amount * len([person for person in payment.paid_for if person != payment.paid_by]), len(payment.paid_for))
+        total_weight = sum([participant.paymentWeight for participant in payment.paid_for])
+        receivable_amounts[payment.paid_by] += Fraction(payment.amount * sum([person.paymentWeight for person in payment.paid_for if person != payment.paid_by]), total_weight)
 
         for person in payment.paid_for:
             if person == payment.paid_by:
                 continue
 
-            receivable_amounts[person] -= Fraction(payment.amount, len(payment.paid_for))
+            receivable_amounts[person] -= Fraction(payment.amount * person.paymentWeight, total_weight)
 
     return receivable_amounts
 

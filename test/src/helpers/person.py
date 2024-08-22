@@ -1,43 +1,49 @@
-import re
-
+from typing import Iterable, Optional
 from pydantic import BaseModel
 import schemas
+from .text import Text
+from itertools import repeat
 
 
 class People(BaseModel):
     members: list[schemas.Person]
 
     @classmethod
-    def alphabetical_range(cls, begin: str, end: str) -> "People":
+    def generate(cls,names: Optional[Iterable[str]] = None, paymentWeights: Optional[Iterable[int]] = None) -> "People":
         """
-        Create a People object from a range of alphabetical characters.
+        Create a People object with a specified number of members.
 
         Args:
-            begin (str): The first alphabetical character.
-            end (str): The last alphabetical character.
-
+            names (Optional[Iterable[int]]): A list of names for the members.
+            weights (Optional[Iterable[int]]): A list of weights for the members.
         Returns:
-            People: A People object with members from the range of alphabetical characters.
+            People: A People object with the specified number of members.
 
         Example:
-            >>> People.alphabetical_range("A", "C")
-            People(members=[Person(name='A'), Person(name='B'), Person(name='C')])
+            >>> People.generate(names=["Alice", "Bob", "Charlie"], weights=[1, 2, 3])
+            People(members=[Person(name='Alice', paymentWeight=1), Person(name='Bob', paymentWeight=2), Person(name='Charlie', paymentWeight=3)])
         """
+        def determine_members_count() -> int:  
+            if names != None:  
+                return len(names)  
+            elif paymentWeights != None:  
+                return len(paymentWeights)  
 
-        VALID_INPUT_REGEX = r"^[A-Z]$"
+            raise ValueError("names and weights cannot both be None")  
 
-        errors = []
+        members_count = determine_members_count()
 
-        if not re.match(VALID_INPUT_REGEX, begin):
-            errors.append("begin must be a single uppercase alphabetical character")
+        return cls(
+        members=[
+            schemas.Person(
+            name=name,
+            paymentWeight=paymentWeight
+            )
+            for name, paymentWeight
+            in zip(
+            names or Text.alphabetical_range("A", chr(members_count - 1 + ord('A'))),
+            paymentWeights or repeat(1)
+            )
+        ]
+        )
 
-        if not re.match(VALID_INPUT_REGEX, end):
-            errors.append("end must be a single uppercase alphabetical character")
-
-        if begin > end:
-            errors.append("begin must be less than or equal to end")
-
-        if errors:
-            raise ValueError(f"{len(errors)} errors occurred:\n\n" + "\n".join(errors))
-
-        return cls(members=[schemas.Person(name=chr(i)) for i in range(ord(begin), ord(end) + 1)])

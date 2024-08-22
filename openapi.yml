@@ -16,7 +16,12 @@ paths:
                     participants:
                         type: "array"
                         items:
-                            type: "string"
+                            type: "object"
+                            properties:
+                                name:
+                                    type: "string"
+                                paymentWeight:
+                                    type: "integer"
                     payments:
                         type: "array"
                         items:
@@ -35,9 +40,12 @@ paths:
                     - "payments"
             example:
                 paricipants:
-                    - "John"
-                    - "Alice"
-                    - "Bob"
+                    - name: "John"
+                      paymentWeight: 3
+                    - name: "Alice"
+                      paymentWeight: 2 
+                    - name: "Bob"
+                      paymentWeight: 1
                 payments:
                     - paid_by: "John"
                       paid_for:
